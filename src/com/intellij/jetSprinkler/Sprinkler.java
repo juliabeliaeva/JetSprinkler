@@ -96,7 +96,7 @@ public class Sprinkler extends Activity {
     addAPlant.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(Sprinkler.this, CreatePlantActivity.class);
+        Intent intent = new Intent(Sprinkler.this, CreatePlant.class);
         startActivity(intent);
       }
     });

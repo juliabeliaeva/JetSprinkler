@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class CreatePlantActivity extends Activity {
+public class CreatePlant extends Activity {
   private static final int REQUEST_IMAGE_CAPTURE = 1;
   private Button takeAPicButton;
   private Button okButton;
