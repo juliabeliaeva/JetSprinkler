@@ -5,14 +5,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
+import android.widget.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +25,11 @@ public class Sprinkler extends Activity {
    */
 
   private static final String TAG = "bluetooth2";
+  private static final int REQUEST_IMAGE_CAPTURE = 1;
 
   ToggleButton btnOn;
+  Button takeAPicButton;
+  ImageView imageView;
   TextView txtArduino;
   Handler h;
 
@@ -55,7 +58,8 @@ public class Sprinkler extends Activity {
 
     btnOn = (ToggleButton) findViewById(R.id.toggleButton);                  // кнопка включения
     txtArduino = (TextView) findViewById(R.id.textView);      // для вывода текста, полученного от Arduino
-
+    takeAPicButton = (Button) findViewById(R.id.takeAPic);
+    imageView = (ImageView) findViewById(R.id.imageView);
 
     h = new Handler() {
       public void handleMessage(android.os.Message msg) {
@@ -81,6 +85,16 @@ public class Sprinkler extends Activity {
     btnOn.setOnClickListener(new OnClickListener() {        // определяем обработчик при нажатии на кнопку
       public void onClick(View v) {
         mConnectedThread.write((byte) (btnOn.isChecked() ? 0x30 : 0x31));    // Отправляем через Bluetooth цифру 1
+      }
+    });
+
+    takeAPicButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+          startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
       }
     });
   }
@@ -157,6 +171,15 @@ public class Sprinkler extends Activity {
     }
   }
 
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+      Bundle extras = data.getExtras();
+      Bitmap imageBitmap = (Bitmap) extras.get("data");
+      imageView.setImageBitmap(imageBitmap);
+    }
+  }
+
   private void errorExit(String title, String message) {
     Toast.makeText(getBaseContext(), title + " - " + message, Toast.LENGTH_LONG).show();
     finish();
@@ -192,7 +215,7 @@ public class Sprinkler extends Activity {
       while (true) {
         try {
           // Read from the InputStream
-          if (mmInStream.available()>0) {
+          if (mmInStream.available() > 0) {
             bytes = mmInStream.read(buffer);        // Получаем кол-во байт и само собщение в байтовый массив "buffer"
             h.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();     // Отправляем в очередь сообщений Handler
           }
