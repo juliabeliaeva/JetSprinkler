@@ -5,10 +5,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,10 +23,9 @@ public class Sprinkler extends Activity {
    */
 
   private static final String TAG = "bluetooth2";
-  private static final int REQUEST_IMAGE_CAPTURE = 1;
 
   ToggleButton btnOn;
-  Button takeAPicButton;
+  Button addAPlant;
   ImageView imageView;
   TextView txtArduino;
   Handler h;
@@ -58,7 +55,7 @@ public class Sprinkler extends Activity {
 
     btnOn = (ToggleButton) findViewById(R.id.toggleButton);                  // кнопка включения
     txtArduino = (TextView) findViewById(R.id.textView);      // для вывода текста, полученного от Arduino
-    takeAPicButton = (Button) findViewById(R.id.takeAPic);
+    addAPlant = (Button) findViewById(R.id.addAPlantButton);
     imageView = (ImageView) findViewById(R.id.imageView);
 
     h = new Handler() {
@@ -96,13 +93,11 @@ public class Sprinkler extends Activity {
       }
     });
 
-    takeAPicButton.setOnClickListener(new OnClickListener() {
+    addAPlant.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-          startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
+        Intent intent = new Intent(Sprinkler.this, CreatePlantActivity.class);
+        startActivity(intent);
       }
     });
   }
@@ -176,15 +171,6 @@ public class Sprinkler extends Activity {
         Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
       }
-    }
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-      Bundle extras = data.getExtras();
-      Bitmap imageBitmap = (Bitmap) extras.get("data");
-      imageView.setImageBitmap(imageBitmap);
     }
   }
 
