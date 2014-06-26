@@ -16,12 +16,6 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="+"
-                android:id="@+id/add_button"/>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:text="Water now!"
                 android:id="@+id/button"/>
