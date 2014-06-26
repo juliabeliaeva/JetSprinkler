@@ -54,6 +54,8 @@ public class Sprinkler extends Activity {
     setContentView(R.layout.main);
 
     btnOn = (ToggleButton) findViewById(R.id.toggleButton);                  // кнопка включения
+    txtArduino = (TextView) findViewById(R.id.textView);      // для вывода текста, полученного от Arduino
+
 
     h = new Handler() {
       public void handleMessage(android.os.Message msg) {
@@ -78,7 +80,7 @@ public class Sprinkler extends Activity {
 
     btnOn.setOnClickListener(new OnClickListener() {        // определяем обработчик при нажатии на кнопку
       public void onClick(View v) {
-        mConnectedThread.write((byte) (btnOn.isChecked() ? 1 : 0));    // Отправляем через Bluetooth цифру 1
+        mConnectedThread.write((byte) (btnOn.isChecked() ? 0x30 : 0x31));    // Отправляем через Bluetooth цифру 1
       }
     });
   }
@@ -190,8 +192,10 @@ public class Sprinkler extends Activity {
       while (true) {
         try {
           // Read from the InputStream
-          bytes = mmInStream.read(buffer);        // Получаем кол-во байт и само собщение в байтовый массив "buffer"
-          h.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();     // Отправляем в очередь сообщений Handler
+          if (mmInStream.available()>0) {
+            bytes = mmInStream.read(buffer);        // Получаем кол-во байт и само собщение в байтовый массив "buffer"
+            h.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();     // Отправляем в очередь сообщений Handler
+          }
         } catch (IOException e) {
           break;
         }
