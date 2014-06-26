@@ -75,12 +75,6 @@ public class PlantsListActivity extends Activity {
     saveState();
   }
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    saveState();
-  }
-
   private void readState() {
     myPlants.clear();
 
