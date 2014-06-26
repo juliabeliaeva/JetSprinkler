@@ -1,4 +1,11 @@
 Pins:
 
-BlueTooth: 0, 1
+BlueTooth: 0, 1 -- rx/tx
 RTC: 6, 7, 8
+Pump: 9 -- pwm
+Valves: 2, 3, 4 [, 5]
+Water sensor: ?
+Soil humidity sensors: A0, A1, A2 [, A3]
+Temperature sensor: ?
+Alarm: 12
+LED: 13
