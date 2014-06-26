@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
+import com.intellij.jetSprinkler.plantList.PlantsListActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +86,7 @@ public class Sprinkler extends Activity {
 
         Bundle sendBundle = new Bundle();
 
-        Intent i = new Intent(Sprinkler.this, PlantsList.class);
+        Intent i = new Intent(Sprinkler.this, PlantsListActivity.class);
         i.putExtras(sendBundle);
         startActivity(i);
 
@@ -93,11 +94,13 @@ public class Sprinkler extends Activity {
       }
     });
 
-    addAPlant.setOnClickListener(new OnClickListener() {
+    takeAPicButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(Sprinkler.this, CreatePlant.class);
-        startActivity(intent);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+          startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
       }
     });
   }
