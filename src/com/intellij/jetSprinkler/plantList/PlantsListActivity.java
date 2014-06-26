@@ -22,7 +22,7 @@ public class PlantsListActivity extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.plantslist);
+    setContentView(R.layout.plants_list);
 
     myPlants.add(new PlantListItem(0, "Misha", null, false, new Date(10000)));
     myPlants.add(new PlantListItem(0, "Misha2", null, false, new Date(10000)));

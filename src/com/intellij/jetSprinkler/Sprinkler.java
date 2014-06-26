@@ -52,7 +52,7 @@ public class Sprinkler extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.main);
+    setContentView(R.layout.sprinkler);
 
     btnOn = (ToggleButton) findViewById(R.id.toggleButton);                  // кнопка включения
     txtArduino = (TextView) findViewById(R.id.textView);      // для вывода текста, полученного от Arduino
