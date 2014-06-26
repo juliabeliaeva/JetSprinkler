@@ -84,7 +84,15 @@ public class Sprinkler extends Activity {
 
     btnOn.setOnClickListener(new OnClickListener() {        // определяем обработчик при нажатии на кнопку
       public void onClick(View v) {
-        mConnectedThread.write((byte) (btnOn.isChecked() ? 0x30 : 0x31));    // Отправляем через Bluetooth цифру 1
+       // mConnectedThread.write((byte) (btnOn.isChecked() ? 0x30 : 0x31));    // Отправляем через Bluetooth цифру 1
+
+        Bundle sendBundle = new Bundle();
+
+        Intent i = new Intent(Sprinkler.this, PlantsList.class);
+        i.putExtras(sendBundle);
+        startActivity(i);
+
+        //finish();
       }
     });
 
