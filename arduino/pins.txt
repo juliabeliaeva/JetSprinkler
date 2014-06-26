@@ -1,0 +1,4 @@
+Pins:
+
+BlueTooth: 0, 1
+RTC: 6, 7, 8
