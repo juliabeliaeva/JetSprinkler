@@ -12,8 +12,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".plantList.PlantsListActivity"/>
+        <activity android:name=".plantPage.PlantInfoActivity"/>
         <activity android:name=".CreatePlant" android:label="Add a Plant" android:theme="@android:style/Theme.Holo.Dialog"/>
-        <activity android:name=".PlantsList"/>
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />

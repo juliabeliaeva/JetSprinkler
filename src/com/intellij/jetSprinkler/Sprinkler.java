@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
+import com.intellij.jetSprinkler.plantList.PlantsListActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +52,7 @@ public class Sprinkler extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.main);
+    setContentView(R.layout.sprinkler);
 
     btnOn = (ToggleButton) findViewById(R.id.toggleButton);                  // кнопка включения
     txtArduino = (TextView) findViewById(R.id.textView);      // для вывода текста, полученного от Arduino
@@ -85,19 +86,11 @@ public class Sprinkler extends Activity {
 
         Bundle sendBundle = new Bundle();
 
-        Intent i = new Intent(Sprinkler.this, PlantsList.class);
+        Intent i = new Intent(Sprinkler.this, PlantsListActivity.class);
         i.putExtras(sendBundle);
         startActivity(i);
 
         //finish();
-      }
-    });
-
-    addAPlant.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Intent intent = new Intent(Sprinkler.this, CreatePlant.class);
-        startActivity(intent);
       }
     });
   }
