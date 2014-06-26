@@ -64,14 +64,18 @@ public class PlantInfoActivity extends Activity {
     if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
       Bundle extras = data.getExtras();
       Bitmap imageBitmap = (Bitmap) extras.get("data");
-      myData.setBitmap(imageBitmap);
-      updateInfo();
+      int size = imageBitmap.getWidth();
+      int y = (imageBitmap.getHeight() - size) / 2;
+      Bitmap cropped = Bitmap.createBitmap(imageBitmap, 0, y, size, size);
+      Bitmap resized = Bitmap.createScaledBitmap(cropped, 250, 250, true);
+      myData.setBitmap(resized);
+      myImg.setImageBitmap(resized);
     }
   }
 
   private void updateInfo() {
     myImg.setImageBitmap(myData.getBitmap());
     myName.setText(myData.getName());
-    myDate.setText("Last watering on "+ DateFormat.getInstance().format(myData.getLastWatering()));
+    myDate.setText("Last watering on " + DateFormat.getInstance().format(myData.getLastWatering()));
   }
 }
