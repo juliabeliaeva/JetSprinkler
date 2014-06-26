@@ -43,17 +43,6 @@ public class PlantListAdapter extends ArrayAdapter<PlantListItem> {
     watering.setText(DateFormat.getInstance().format(plant.getLastWatering()));
     icon.setImageBitmap(plant.getBitmap());
 
-    Button btn = (Button) findViewById(R.id.add_button);
-
-
-    btn.setOnClickListener(new View.OnClickListener() {});
-
-      Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-    }
-
-
     return row;
   }
 }
