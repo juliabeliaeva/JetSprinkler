@@ -60,7 +60,7 @@ void setTime1302(int seconds, int minutes, int hours, int dayofweek, int dayofmo
   DS1302_clock_burst_write( (uint8_t *) &rtc);
 }
 
-void loop1302()
+void test1302()
 {
   ds1302_struct rtc;
   char buffer[80];     // the code uses 70 characters.
@@ -81,8 +81,6 @@ void loop1302()
     rtc.Day, \
     2000 + bcd2bin( rtc.Year10, rtc.Year));
   Serial.println( buffer);
-
-  delay( 5000);
 }
 
 

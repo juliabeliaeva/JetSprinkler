@@ -226,5 +226,5 @@ typedef struct ds1302_struct
 void setup1302();
 void setTime1302(int seconds=0, int minutes=8, int hours=10, int dayofweek=2, int dayofmonth=15, int month=4, int year=2013);
 
-void loop1302();
+void test1302();
 
