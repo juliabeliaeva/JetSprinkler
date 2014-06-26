@@ -19,11 +19,7 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Take a pic"
-            android:id="@+id/takeAPic" android:layout_gravity="center_horizontal"/>
-    <ImageView
-            android:layout_width="191dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView" android:layout_gravity="center_horizontal" android:layout_weight="0.48"/>
+            android:text="Add a Plant"
+            android:id="@+id/addAPlantButton" android:layout_gravity="center_horizontal"/>
 </LinearLayout>
 
