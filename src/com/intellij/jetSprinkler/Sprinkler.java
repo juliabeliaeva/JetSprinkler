@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -27,7 +26,7 @@ public class Sprinkler extends Activity {
 
   private static final String TAG = "bluetooth2";
 
-  Button btnOn;
+  ToggleButton btnOn;
   TextView txtArduino;
   Handler h;
 
@@ -43,7 +42,7 @@ public class Sprinkler extends Activity {
   private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
   // MAC-адрес Bluetooth модуля
-  private static String address = "00:15:FF:F2:19:4C";
+  private static String address = "98:D3:31:B1:81:70";
 
   /**
    * Called when the activity is first created.
@@ -79,7 +78,7 @@ public class Sprinkler extends Activity {
 
     btnOn.setOnClickListener(new OnClickListener() {        // определяем обработчик при нажатии на кнопку
       public void onClick(View v) {
-        mConnectedThread.write(btnOn.isPressed() ? "1" : "0");    // Отправляем через Bluetooth цифру 1
+        mConnectedThread.write((byte) (btnOn.isChecked() ? 1 : 0));    // Отправляем через Bluetooth цифру 1
       }
     });
   }
@@ -200,9 +199,9 @@ public class Sprinkler extends Activity {
     }
 
     /* Call this from the main activity to send data to the remote device */
-    public void write(String message) {
+    public void write(byte message) {
       Log.d(TAG, "...Данные для отправки: " + message + "...");
-      byte[] msgBuffer = message.getBytes();
+      byte[] msgBuffer = new byte[]{message};
       try {
         mmOutStream.write(msgBuffer);
       } catch (IOException e) {
