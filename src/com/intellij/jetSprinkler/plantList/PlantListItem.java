@@ -3,7 +3,6 @@ package com.intellij.jetSprinkler.plantList;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.intellij.jetSprinkler.timetable.Timetable;
 
 import java.util.Date;
 
@@ -12,14 +11,12 @@ public class PlantListItem implements Parcelable {
   private String myName;
   private Bitmap myBitmap;
   private Date myLastWatering;
-  private Timetable myTimetable;
 
   public PlantListItem(int number) {
     myNumber = number;
     myName = "Plant " + number;
     myBitmap = null;
     myLastWatering = new Date(System.currentTimeMillis());
-    myTimetable = new Timetable();
   }
 
   public void setName(String myName) {
@@ -32,10 +29,6 @@ public class PlantListItem implements Parcelable {
 
   public void setLastWatering(Date myLastWatering) {
     this.myLastWatering = myLastWatering;
-  }
-
-  public void setTimetable(Timetable myTimetable) {
-    this.myTimetable = myTimetable;
   }
 
   public int getNumber() {
@@ -54,10 +47,6 @@ public class PlantListItem implements Parcelable {
     return myLastWatering;
   }
 
-  public Timetable getTimetable() {
-    return myTimetable;
-  }
-
   @Override
   public int describeContents() {
     return 0;
@@ -68,7 +57,6 @@ public class PlantListItem implements Parcelable {
     out.writeString(myName);
     out.writeParcelable(myBitmap, flags);
     out.writeLong(myLastWatering.getTime());
-    out.writeParcelable(myTimetable, flags);
   }
 
   public static final Parcelable.Creator<PlantListItem> CREATOR = new Parcelable.Creator<PlantListItem>() {
@@ -77,7 +65,6 @@ public class PlantListItem implements Parcelable {
       result.setName(in.readString());
       result.setBitmap((Bitmap) in.readParcelable(PlantListItem.class.getClassLoader()));
       result.setLastWatering(new Date(in.readLong()));
-      result.setTimetable((Timetable) in.readParcelable(PlantListItem.class.getClassLoader()));
       return result;
     }
 
