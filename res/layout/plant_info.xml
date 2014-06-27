@@ -5,8 +5,9 @@
              android:layout_height="match_parent">
 
     <TabHost
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" android:id="@+id/tabHost"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tabHost"
             android:layout_gravity="center_horizontal|top">
         <LinearLayout
                 android:layout_width="fill_parent"
@@ -19,77 +20,89 @@
             </TabWidget>
             <FrameLayout
                     android:id="@android:id/tabcontent"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <LinearLayout
                         android:id="@+id/info"
                         android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-                    <LinearLayout
-                            android:id="@+id/caption"
-                            android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    <RelativeLayout
+                            android:id="@+id/info2"
+                            android:orientation="vertical"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content">
-
-                        <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/imageView"
-                                android:minHeight="250px"
-                                android:minWidth="250px"
-                                android:background="#333333"
-                                />
+                            android:layout_height="fill_parent">
                         <LinearLayout
-                                android:id="@+id/info2"
-                                android:orientation="vertical"
+                                android:id="@+id/caption"
+                                android:orientation="horizontal"
                                 android:layout_width="fill_parent"
-                                android:layout_height="fill_parent">
+                                android:layout_height="wrap_content">
 
-                            <EditText
-                                    android:layout_width="fill_parent"
+                            <ImageView
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/plantName"
-                                    android:inputType="text"
-                                    android:textStyle="bold"
-                                    android:textSize="33dp"
-                                    android:hint="Plant Name"/>
-                            <TextView
+                                    android:id="@+id/imageView"
+                                    android:minHeight="250px"
+                                    android:minWidth="250px"
+                                    android:background="#333333"
+                                    />
+                            <LinearLayout
+                                    android:id="@+id/info2"
+                                    android:orientation="vertical"
                                     android:layout_width="fill_parent"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/lastWatering"
-                                    android:textSize="11dp"
-                                    android:layout_marginLeft="13dp"
-                                    android:hint="Last watering yesterday at 11:11:11"/>
+                                    android:layout_height="fill_parent">
+
+                                <EditText
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/plantName"
+                                        android:inputType="text"
+                                        android:textStyle="bold"
+                                        android:textSize="33dp"
+                                        android:hint="Plant Name"/>
+                                <TextView
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/lastWatering"
+                                        android:textSize="11dp"
+                                        android:layout_marginLeft="13dp"
+                                        android:hint="Last watering yesterday at 11:11:11"/>
+                            </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
-                    <LinearLayout
-                            android:id="@+id/floor"
-                            android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:gravity="center"
-                            android:layout_alignParentBottom="true">
-                        <Button
-                                android:layout_width="wrap_content"
+                        <LinearLayout
+                                android:id="@+id/floor"
+                                android:orientation="horizontal"
+                                android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Save"
-                                android:id="@+id/button"/>
-                    </LinearLayout>
-                    <LinearLayout
-                            android:id="@+id/center"
-                            android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_below="@id/caption"
-                            android:layout_above="@id/floor">
-                    </LinearLayout>
-                </RelativeLayout>
+                                android:layout_gravity="center_horizontal"
+                                android:gravity="center"
+                                android:layout_alignParentBottom="true">
+                            <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Save"
+                                    android:id="@+id/button"/>
+                        </LinearLayout>
+                        <LinearLayout
+                                android:id="@+id/center"
+                                android:orientation="horizontal"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_below="@id/caption"
+                                android:layout_above="@id/floor">
+                        </LinearLayout>
+                    </RelativeLayout>
+                </LinearLayout>
                 <LinearLayout
                         android:id="@+id/stat"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="123"/>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

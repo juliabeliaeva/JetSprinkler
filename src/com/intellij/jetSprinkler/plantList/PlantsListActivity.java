@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.intellij.jetSprinkler.Connection;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.plantPage.PlantInfoActivity;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 public class PlantsListActivity extends Activity {
   public static final String NAME = "NAME_";
   public static final String SIZE = "SIZE";
+  public static final String DEVICE = "device";
   private final ArrayList<PlantListItem> myPlants = new ArrayList<PlantListItem>();
   public static final int MY_CHILD_ACTIVITY = 666;
 
@@ -76,6 +78,7 @@ public class PlantsListActivity extends Activity {
   protected void onStop() {
     super.onStop();
     saveState();
+    Connection.getInstance().dispose();
   }
 
   private void readState() {

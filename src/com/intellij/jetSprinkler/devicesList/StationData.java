@@ -1,4 +1,4 @@
-package com.intellij.jetSprinkler;
+package com.intellij.jetSprinkler.devicesList;
 
 import android.os.Parcel;
 import android.os.Parcelable;

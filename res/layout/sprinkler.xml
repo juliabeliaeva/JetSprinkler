@@ -4,22 +4,9 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:weightSum="1">
-    <ToggleButton
-            android:layout_width="wrap_content"
+    <ListView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New ToggleButton"
-            android:id="@+id/toggleButton" android:layout_gravity="center_horizontal" android:textOn="On"
-            android:textOff="Off"/>
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/textView"/>
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add a Plant"
-            android:id="@+id/addAPlantButton" android:layout_gravity="center_horizontal"/>
+            android:id="@+id/listView"/>
 </LinearLayout>
 
