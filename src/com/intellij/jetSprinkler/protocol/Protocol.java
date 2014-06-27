@@ -31,7 +31,7 @@ public class Protocol {
     return CommandExecutor.executeCommand("D", id + "", true);
   }
 
-  public static int getSprinklerCount(int id) {
+  public static int getSprinklerCount() {
     String res = CommandExecutor.executeCommand("N", null, true);
     if (res == null) return -1;
     return Integer.parseInt(res);

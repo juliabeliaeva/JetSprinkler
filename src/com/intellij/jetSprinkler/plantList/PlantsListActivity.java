@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.intellij.jetSprinkler.Connection;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.plantPage.PlantInfoActivity;
+import com.intellij.jetSprinkler.protocol.Protocol;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,8 @@ public class PlantsListActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.plants_list);
 
-    readState();
+    int sprinklerCount = Protocol.getSprinklerCount();
+    readState(sprinklerCount);
 
     adapter = new PlantListAdapter(this,
             R.layout.plantlist_item_row, myPlants);
@@ -51,13 +53,13 @@ public class PlantsListActivity extends Activity {
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    switch(requestCode) {
-      case (MY_CHILD_ACTIVITY) : {
+    switch (requestCode) {
+      case (MY_CHILD_ACTIVITY): {
         if (resultCode == Activity.RESULT_OK) {
           PlantListItem plant = ((PlantListItem) data.getExtras().get(PlantInfoActivity.PLANT_DATA));
-          for (int i=0;i<myPlants.size();i++){
-            if (myPlants.get(i).getNumber()==plant.getNumber()){
-              myPlants.set(i,plant);
+          for (int i = 0; i < myPlants.size(); i++) {
+            if (myPlants.get(i).getNumber() == plant.getNumber()) {
+              myPlants.set(i, plant);
               break;
             }
           }
@@ -81,23 +83,16 @@ public class PlantsListActivity extends Activity {
     Connection.getInstance().dispose();
   }
 
-  private void readState() {
+  private void readState(int sprinklerCount) {
     myPlants.clear();
 
     SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
     int plantsNumber = sharedPreferences.getInt(SIZE, 0);
 
-    for (int i = 0; i < plantsNumber; i++) {
-      String name = sharedPreferences.getString(NAME + i, "" + i);
+    for (int i = 0; i < sprinklerCount; i++) {
       PlantListItem res = new PlantListItem(i);
-      res.setName(name);
+      res.setName(i < plantsNumber ? sharedPreferences.getString(NAME + i, "" + i) : "Port " + i);
       myPlants.add(res);
-    }
-
-    if (myPlants.size() == 0) {
-      // for testing purposes
-      myPlants.add(new PlantListItem(0));
-      myPlants.add(new PlantListItem(1));
     }
   }
 
@@ -106,7 +101,7 @@ public class PlantsListActivity extends Activity {
     SharedPreferences.Editor editor = sharedPreferences.edit();
 
     editor.putInt(SIZE, myPlants.size());
-    for (PlantListItem plant: myPlants) {
+    for (PlantListItem plant : myPlants) {
       editor.putString(NAME + plant.getNumber(), plant.getName()); // todo path to image
     }
 
