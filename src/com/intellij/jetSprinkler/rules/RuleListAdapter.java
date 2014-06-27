@@ -42,7 +42,7 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     Calendar date = new GregorianCalendar();
     date.set(Calendar.HOUR_OF_DAY, rule.getHour());
     date.set(Calendar.MINUTE, rule.getMinute());
-    text.setText(new SimpleDateFormat("hh:mm").format(date.getTime()) + " every " + (rule.getInterval() == 1 ? rule.getUnit().name : rule.getInterval() + " " + rule.getUnit().name + "s"));
+    text.setText(new SimpleDateFormat("HH:mm").format(date.getTime()) + " every " + (rule.getInterval() == 1 ? rule.getUnit().name : rule.getInterval() + " " + rule.getUnit().name + "s"));
 
     return row;
   }

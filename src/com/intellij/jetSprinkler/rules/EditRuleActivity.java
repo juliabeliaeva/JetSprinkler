@@ -25,6 +25,9 @@ public class EditRuleActivity extends Activity {
     timePicker.setCurrentHour(rule.getHour());
     timePicker.setCurrentMinute(rule.getMinute());
 
+    final TextView unitText = (TextView) findViewById(R.id.unitText1);
+    unitText.setText(rule.getUnit().name);
+
     Spinner spinner = (Spinner) findViewById(R.id.intervalPicker);
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
             R.array.units_array, android.R.layout.simple_spinner_item);
@@ -36,6 +39,7 @@ public class EditRuleActivity extends Activity {
         final RuleListAdapter.UNIT[] values = RuleListAdapter.UNIT.values();
         if (position >= 0 && position < values.length) {
           rule.setUnit(values[position]);
+          unitText.setText(values[position].name + (rule.getInterval() == 1 ? "" : "s"));
         }
       }
 
@@ -47,9 +51,7 @@ public class EditRuleActivity extends Activity {
 
     final EditText numberPicker = (EditText) findViewById(R.id.intervalText);
     numberPicker.setText("" + rule.getInterval());
-
-    TextView unitText = (TextView) findViewById(R.id.unitText);
-    unitText.setText(rule.getUnit().name());
+    numberPicker.setWidth(timePicker.getWidth());
 
     Button okButton = (Button) findViewById(R.id.saveRuleButton);
     okButton.setOnClickListener(new View.OnClickListener() {
