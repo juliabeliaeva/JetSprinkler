@@ -92,7 +92,7 @@ public class CommandExecutor {
 
     //extract target checksum
     byte[] targetCSum = new byte[fullRes.length - index - 2];
-    System.arraycopy(fullRes, 0, targetCSum, 0, targetCSum.length);
+    System.arraycopy(fullRes, index+1, targetCSum, 0, targetCSum.length);
 
     if (checksum != Integer.parseInt(fromAscii(targetCSum))) return null;
 
