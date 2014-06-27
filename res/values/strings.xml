@@ -6,4 +6,60 @@
         <item>weekly</item>
         <item>monthly</item>
     </string-array>
+
+    <style name="normalText" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/white_color</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="titleText" parent="normalText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22dp</item>
+    </style>
+
+    <style name="secondaryText" parent="normalText">
+        <item name="android:textColor">@android:color/secondary_text_dark</item>
+        <item name="android:textSize">11dp</item>
+    </style>
+
+    <style name="button" parent="ButtonAppTheme"/>
+
+    <style name="editText" parent="EditTextAppTheme"/>
+
+    <style name="tab" parent="TabAppTheme"/>
+
+    <style name="tabText"  parent="TabTextAppTheme"/>
+
+    <style name="spinner" parent="SpinnerAppTheme"/>
+
+    <color name="white_color">@android:color/background_light</color>
+    <color name="black_color">@android:color/primary_text_light</color>
+    <color name="secondary_black_color">@android:color/secondary_text_light</color>
+    <color name="light_color">#99cc00</color>
+    <color name="dark_color">#669900</color>
+
+    <style name="CustomTheme" parent="AppTheme">
+    </style>
+
+    <style name="CustomDialogTheme" parent="android:Theme.Holo.Dialog">
+        <item name="android:editTextStyle">@style/EditTextAppTheme</item>
+
+        <item name="android:textColorHighlight">#9999cc00</item>
+
+        <item name="android:checkboxStyle">@style/CheckBoxAppTheme</item>
+
+        <item name="android:buttonStyle">@style/ButtonAppTheme</item>
+
+        <item name="android:imageButtonStyle">@style/ImageButtonAppTheme</item>
+
+        <item name="android:spinnerStyle">@style/SpinnerAppTheme</item>
+
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemAppTheme</item>
+
+        <item name="android:listViewStyle">@style/ListViewAppTheme</item>
+
+        <item name="android:listViewWhiteStyle">@style/ListViewAppTheme.White</item>
+
+        <item name="android:spinnerItemStyle">@style/SpinnerItemAppTheme</item>
+    </style>
 </resources>

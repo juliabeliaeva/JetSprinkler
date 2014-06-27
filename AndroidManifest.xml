@@ -6,15 +6,16 @@
     <uses-sdk android:minSdkVersion="16"/>
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <activity android:name=".devicesList.Sprinkler"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                android:theme="@style/CustomTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".plantList.PlantsListActivity"/>
-        <activity android:name=".plantPage.PlantInfoActivity" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".rules.EditRuleActivity" android:label="Edit rule" android:theme="@android:style/Theme.Holo.Dialog" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".plantList.PlantsListActivity" android:theme="@style/CustomTheme"/>
+        <activity android:name=".plantPage.PlantInfoActivity" android:windowSoftInputMode="stateHidden" android:theme="@style/CustomTheme"/>
+        <activity android:name=".rules.EditRuleActivity" android:label="Edit rule" android:theme="@style/CustomDialogTheme" android:windowSoftInputMode="stateHidden"/>
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
