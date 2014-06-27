@@ -154,10 +154,8 @@ public class PlantInfoActivity extends Activity {
         cal.set(Calendar.DAY_OF_MONTH,cal.get(Calendar.DAY_OF_MONTH)+1);
       }
       cal.set(Calendar.HOUR_OF_DAY,r.getHour());
-      Calendar calStart = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
-      calStart.set(2014,Calendar.JANUARY,1);
 
-      ti.start = ((int) ((cal.getTimeInMillis() - calStart.getTimeInMillis()) / (1000 * 60)));
+      ti.start = ((int) ((cal.getTimeInMillis() - getStartCalendar().getTimeInMillis()) / (1000 * 60)));
       ti.volume = r.getVolume();
 
       tt.items.add(ti);
@@ -165,8 +163,34 @@ public class PlantInfoActivity extends Activity {
     return tt;
   }
 
-  private void rulesFromTimetable(Timetable timetable) {
+  private Calendar getStartCalendar() {
+    Calendar calStart = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
+    calStart.set(2014,Calendar.JANUARY,1);
+    return calStart;
+  }
 
+  private void rulesFromTimetable(Timetable timetable) {
+    for (Timetable.TimetableItem ti:timetable.items){
+      Rule r = new Rule();
+
+      Rule.UNIT right=null;
+      for (Rule.UNIT u:Rule.UNIT.values()){
+        if (ti.period%u.howManyMinutes()==0){
+          right = u;
+        }
+      }
+      assert right!=null;
+
+      r.setInterval(ti.period/right.howManyMinutes());
+      r.setUnit(right);
+
+      Calendar cal = getStartCalendar();
+      cal.add(Calendar.MINUTE, ti.start);
+
+      r.setHour(cal.get(Calendar.HOUR_OF_DAY));
+      r.setVolume(ti.volume);
+      rules.add(r);
+    }
   }
 
   private void updateBackground() {

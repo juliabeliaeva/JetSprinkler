@@ -96,10 +96,10 @@ public class Rule implements Parcelable {
 
 
   public static enum UNIT {
+    MINUTE("minute", "minute", 1), // todo remove after presentation
     DAY("day", "daily", 24*60),
     WEEK("week", "weekly", 7*24*60),
-    MONTHS("month", "monthly", 30*24*60),
-    MINUTE("minute", "minute", 1); // todo remove after presentation
+    MONTHS("month", "monthly", 30*24*60);
 
     public final String name;
     public final String adjective;
