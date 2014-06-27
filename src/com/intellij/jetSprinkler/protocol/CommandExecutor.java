@@ -14,7 +14,7 @@ public class CommandExecutor {
     //clean buffers (bytes may be left from the previous command)
     while (true) {
       if (Connection.getInstance().read().length == 0) break;
-      wait(50);
+      wait(100);
     }
 
     // ->CMD
@@ -54,6 +54,7 @@ public class CommandExecutor {
     List<byte[]> read = new LinkedList<byte[]>();
     int length = 0;
     do {
+      //todo for "set timetable" command it can take mote than thisCommandExecutor: review
       wait(100);
       byte[] bytes = Connection.getInstance().read();
       if (bytes.length == 0) break;
@@ -74,7 +75,6 @@ public class CommandExecutor {
     for (int i = 0; i < 3; i++) {
       if (fullRes[i] != toAscii(s + "OK")[i]) return null;
     }
-    if (fullRes[3] != 0x10) return null;
 
     if (length == 4) return expectsResult ? null : "";
 
