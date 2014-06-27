@@ -3,9 +3,15 @@ package com.intellij.jetSprinkler.plantPage;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -19,8 +25,11 @@ import com.intellij.jetSprinkler.rules.SwipeDismissListViewTouchListener;
 import com.intellij.jetSprinkler.timetable.Rule;
 import com.intellij.jetSprinkler.timetable.Timetable;
 
+import java.io.*;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PlantInfoActivity extends Activity {
   private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -31,6 +40,8 @@ public class PlantInfoActivity extends Activity {
   private EditText myName;
   private TextView myDate;
   private TextView timeTableHeader;
+  private String lastImageUri; // And this code is going to be in a public repo. FOREVER. My sadness is infinite.
+  private long captureTime;
 
   private final ArrayList<Rule> rules = new ArrayList<Rule>();
   private RuleListAdapter rulesListAdapter;
@@ -41,7 +52,11 @@ public class PlantInfoActivity extends Activity {
     setContentView(R.layout.plant_info);
 
     myData = (PlantListItem) getIntent().getExtras().get(PLANT_DATA);
-    myTimetable = Protocol.getTimetable();
+    try {
+      myTimetable = Protocol.getTimetable();
+    } catch (Throwable t) {
+      // so what, it's 2:39, I can do anything
+    }
 
     rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
     ListView list = ((ListView) findViewById(R.id.rulesList));
@@ -99,9 +114,12 @@ public class PlantInfoActivity extends Activity {
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (!Protocol.setTimetable(myTimetable)){
-          //todo show error
-          return;
+        try {
+          if (!Protocol.setTimetable(myTimetable)) {
+            //todo show error
+            return;
+          }
+        } catch (Throwable t) {
         }
         Intent result = new Intent();
         myData.setName(myName.getText().toString());
@@ -117,24 +135,61 @@ public class PlantInfoActivity extends Activity {
       public void onClick(View v) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-          startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
       }
     });
 
     timeTableHeader = (TextView) findViewById(R.id.timetableHeader);
 
+    updateBackground();
     updateInfo();
+  }
+
+  private void updateBackground() {
+    Display display = getWindowManager().getDefaultDisplay();
+    Point size = new Point();
+    display.getSize(size);
+
+    Bitmap bitmap = myData.loadFullScreanImage(size.x, size.y);
+
+    View view = findViewById(R.id.info);
+    if (bitmap != null) {
+      view.setBackground(new BitmapDrawable(bitmap));
+    } else {
+      view.setBackground(new ColorDrawable(Color.RED));
+    }
   }
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-      Bundle extras = data.getExtras();
-      Bitmap imageBitmap = (Bitmap) extras.get("data");
-      View view = findViewById(R.id.info);
-      view.setBackground(new BitmapDrawable(imageBitmap));
-      myData.setBitmap(imageBitmap);
+    if (requestCode == REQUEST_IMAGE_CAPTURE) {
+      final Uri imageUri = data.getData();
+      try {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        Bitmap toSave = PlantListItem.loadBitmap(size.x, size.y, new PlantListItem.InputStreamBuilder() {
+          @Override
+          public InputStream openStream() throws FileNotFoundException {
+            return getContentResolver().openInputStream(imageUri);
+          }
+        });
+
+        if (toSave != null) {
+          File photoFile = createImageFile();
+          FileOutputStream fOut = new FileOutputStream(photoFile);
+          toSave.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+          fOut.flush();
+          fOut.close();
+          myData.setImageFileUri(photoFile.getAbsolutePath());
+        }
+
+        updateBackground();
+      } catch (IOException ex) {
+        // oh well
+      }
     } else if (requestCode == REQUEST_EDIT_RULE && resultCode == RESULT_OK) {
       Rule rule = (Rule) data.getExtras().get(EditRuleActivity.RULE_DATA);
       int index = data.getIntExtra(EditRuleActivity.RULE_INDEX_DATA, -1);
@@ -167,10 +222,22 @@ public class PlantInfoActivity extends Activity {
   }
 
   private void updateInfo() {
-    View view = findViewById(R.id.info);
-    view.setBackground(new BitmapDrawable(myData.getBitmap()));
     myName.setText(myData.getName());
     myDate.setText("Last watering on " + DateFormat.getInstance().format(myData.getLastWatering()));
     updateTimetableHeader();
+  }
+
+  private File createImageFile() throws IOException {
+    // Create an image file name
+    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    String imageFileName = "JPEG_" + timeStamp + "_";
+    File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+    File image = File.createTempFile(
+            imageFileName,  /* prefix */
+            ".jpg",         /* suffix */
+            storageDir      /* directory */
+    );
+
+    return image;
   }
 }

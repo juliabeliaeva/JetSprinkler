@@ -41,7 +41,7 @@ public class PlantListAdapter extends ArrayAdapter<PlantListItem> {
     PlantListItem plant = myItems.get(position);
     title.setText(plant.getName());
     watering.setText(DateFormat.getInstance().format(plant.getLastWatering()));
-    icon.setImageBitmap(plant.getBitmap());
+    icon.setImageBitmap(plant.loadSquarePreview());
 
     return row;
   }

@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 public class PlantsListActivity extends Activity {
   public static final String NAME = "NAME_";
+  public static final String PORT = "PORT_";
+  public static final String IMAGE_URI = "IMAGE_URI_";
   public static final String SIZE = "SIZE";
   public static final int MY_CHILD_ACTIVITY = 666;
   private final ArrayList<PlantListItem> myPlants = new ArrayList<PlantListItem>();
@@ -28,7 +30,12 @@ public class PlantsListActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.plants_list);
 
-    int sprinklerCount = Protocol.getSprinklerCount();
+    int sprinklerCount;
+    try {
+      sprinklerCount = Protocol.getSprinklerCount();
+    } catch (Throwable throwable) {
+      sprinklerCount = 10;
+    }
     if (sprinklerCount==-1) {
       throw new RuntimeException("hallo");
     }
@@ -91,9 +98,13 @@ public class PlantsListActivity extends Activity {
     SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
     int plantsNumber = sharedPreferences.getInt(SIZE, 0);
 
-    for (int i = 0; i < sprinklerCount; i++) {
-      PlantListItem res = new PlantListItem(i);
-      res.setName(i < plantsNumber ? sharedPreferences.getString(NAME + i, "" + i) : "Port " + i);
+    for (int i = 0; i < plantsNumber; i++) {
+      String name = sharedPreferences.getString(NAME + i, "Plant " + i);
+      String imageUri = sharedPreferences.getString(IMAGE_URI + i, null);
+      int port = sharedPreferences.getInt(PORT + i, i);
+      PlantListItem res = new PlantListItem(port);
+      res.setName(name);
+      res.setImageFileUri(imageUri);
       myPlants.add(res);
     }
   }
@@ -103,8 +114,11 @@ public class PlantsListActivity extends Activity {
     SharedPreferences.Editor editor = sharedPreferences.edit();
 
     editor.putInt(SIZE, myPlants.size());
-    for (PlantListItem plant : myPlants) {
-      editor.putString(NAME + plant.getNumber(), plant.getName()); // todo path to image
+    for (int i = 0; i < myPlants.size(); i++) {
+      PlantListItem plant = myPlants.get(i);
+      editor.putString(NAME + i, plant.getName());
+      editor.putString(IMAGE_URI + i, plant.getImageFileUri());
+      editor.putInt(PORT + i, plant.getNumber());
     }
 
     editor.commit();
