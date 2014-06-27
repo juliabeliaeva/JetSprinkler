@@ -81,6 +81,21 @@ void loop() {
 }
 
 void processCmd() {
+  // check control sum
+  char *pHash = strchr(buffer, '#');
+  if (pHash) {     // calculate and check control sum
+    int calculated = checksum(buffer, pHash),
+        expected   = getInt(++pHash);
+    if (calculated != expected) {
+      debug("checksum error! "); debug(calculated); debug("!="); debug(expected);
+      ttyCmd.print("ERROR in control sum\n");
+      return;
+    }
+  } else {         // no control sum
+    // ignore for now
+    debug("no control sum supplied");
+  }
+  // process cmd
   switch (cmd) {
     case 'V':
       ttyCmd.print("OK\n");
@@ -94,6 +109,7 @@ void processCmd() {
     case 'S':
       setTime1302(0, 50, 23, 4, 26, 6, 2014);  //todo: parse and set time
       ttyCmd.print("OK\n");
+      break;
 
     case 'P':
       stopWatering();
@@ -120,14 +136,11 @@ void stopWatering() {
   for (int i=0; i<(sizeof(pinValve)/sizeof(int)); ++i)  digitalWrite(pinValve[i], LOW);
 }
 
-int getInt(char* &ptr) {  // advance ptr till next nondigit, return int value
-    char *p0 = ptr;
-    while (ptr<bufferPtr && isDigit(*ptr)) ++ptr;
-    char ch = *ptr;
-    *ptr = 0;
-    int n = atoi(buffer);
-    *ptr = ch;
-    return n;
+int getInt(char* &ptr) {        // advance ptr till next nondigit, return int value
+  int result = 0;
+  for (const char *p0=ptr; ptr<bufferPtr && isDigit(*ptr); ++ptr)
+    (result *= 10) += (*ptr - '0');
+  return result;
 }
 
 int checksum(const char *p0, const char *p1) {
