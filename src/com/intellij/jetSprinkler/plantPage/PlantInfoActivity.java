@@ -36,7 +36,6 @@ public class PlantInfoActivity extends Activity {
   private static final int REQUEST_EDIT_RULE = 2;
   public static final String PLANT_DATA = "plantData";
   private PlantListItem myData;
-  private Timetable myTimetable;
   private EditText myName;
   private TextView myDate;
   private TextView timeTableHeader;
@@ -52,11 +51,7 @@ public class PlantInfoActivity extends Activity {
     setContentView(R.layout.plant_info);
 
     myData = (PlantListItem) getIntent().getExtras().get(PLANT_DATA);
-    try {
-      myTimetable = Protocol.getTimetable();
-    } catch (Throwable t) {
-      // so what, it's 2:39, I can do anything
-    }
+    rulesFromTimetable(Protocol.getTimetable());
 
     rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
     ListView list = ((ListView) findViewById(R.id.rulesList));
@@ -114,12 +109,9 @@ public class PlantInfoActivity extends Activity {
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        try {
-          if (!Protocol.setTimetable(myTimetable)) {
-            //todo show error
-            return;
-          }
-        } catch (Throwable t) {
+        if (!Protocol.setTimetable(timetableFromRules())){
+          //todo show error
+          return;
         }
         Intent result = new Intent();
         myData.setName(myName.getText().toString());
@@ -144,6 +136,14 @@ public class PlantInfoActivity extends Activity {
 
     updateBackground();
     updateInfo();
+  }
+
+  private Timetable timetableFromRules() {
+    return null;
+  }
+
+  private void rulesFromTimetable(Timetable timetable) {
+
   }
 
   private void updateBackground() {
