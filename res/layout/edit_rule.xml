@@ -2,19 +2,38 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <TimePicker
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" android:gravity="center_vertical|center_horizontal">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TimePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/timePicker" android:layout_gravity="center_horizontal"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="136dp"
+                    android:text="every"
+                    android:id="@+id/textView"/>
+            <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/numberPicker"/>
+            <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/intervalPicker" android:layout_weight="1" android:spinnerMode="dropdown"/>
+        </LinearLayout>
+    </LinearLayout>
+    <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/timePicker"/>
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="136dp"
-            android:text="every"
-            android:id="@+id/textView"/>
-    <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/intervalPicker" android:layout_weight="1" android:spinnerMode="dropdown"/>
+            android:text="OK"
+            android:id="@+id/saveRuleButton" android:layout_gravity="center_horizontal|bottom"/>
 </LinearLayout>
