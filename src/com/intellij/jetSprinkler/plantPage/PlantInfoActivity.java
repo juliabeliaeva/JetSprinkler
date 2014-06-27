@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.plantList.PlantListItem;
@@ -24,6 +26,7 @@ public class PlantInfoActivity extends Activity {
   private PlantListItem myData;
   private EditText myName;
   private TextView myDate;
+  private TextView timeTableHeader;
 
   private final ArrayList<RuleListAdapter.Rule> rules = new ArrayList<RuleListAdapter.Rule>();
   private RuleListAdapter rulesListAdapter;
@@ -52,6 +55,7 @@ public class PlantInfoActivity extends Activity {
                           rulesListAdapter.remove(rulesListAdapter.getItem(position));
                         }
                         rulesListAdapter.notifyDataSetChanged();
+                        updateInfo();
                       }
                     });
     list.setOnTouchListener(touchListener);
@@ -67,6 +71,7 @@ public class PlantInfoActivity extends Activity {
     myDate = (TextView) findViewById(R.id.lastWatering);
     Button btn = (Button) findViewById(R.id.savePlant);
     Button addRule = (Button) findViewById(R.id.addRule);
+
     addRule.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -74,7 +79,17 @@ public class PlantInfoActivity extends Activity {
       }
     });
 
-    updateInfo();
+    myName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+          myData.setName(v.getText().toString());
+          updateTimetableHeader();
+          return false;
+        }
+        return false;
+      }
+    });
 
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -97,6 +112,10 @@ public class PlantInfoActivity extends Activity {
         }
       }
     });
+
+    timeTableHeader = (TextView) findViewById(R.id.timetableHeader);
+
+    updateInfo();
   }
 
   @Override
@@ -112,9 +131,11 @@ public class PlantInfoActivity extends Activity {
       int index = data.getIntExtra(EditRuleActivity.RULE_INDEX_DATA, -1);
       if (index >=0 && index < rules.size()) {
         rules.set(index, rule);
+        updateTimetableHeader();
         rulesListAdapter.notifyDataSetChanged();
       } else if (index == rules.size()) {
         rules.add(rule);
+        updateTimetableHeader();
         rulesListAdapter.notifyDataSetChanged();
       }
     }
@@ -127,10 +148,19 @@ public class PlantInfoActivity extends Activity {
     startActivityForResult(intent, REQUEST_EDIT_RULE);
   }
 
+  private void updateTimetableHeader() {
+    if (rules.isEmpty()) {
+      timeTableHeader.setText("Not watering " + myData.getName());
+    } else {
+      timeTableHeader.setText("Watering " + myData.getName());
+    }
+  }
+
   private void updateInfo() {
     View view = findViewById(R.id.info);
     view.setBackground(new BitmapDrawable(myData.getBitmap()));
     myName.setText(myData.getName());
     myDate.setText("Last watering on " + DateFormat.getInstance().format(myData.getLastWatering()));
+    updateTimetableHeader();
   }
 }

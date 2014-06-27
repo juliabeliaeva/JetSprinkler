@@ -14,7 +14,7 @@ public class PlantListItem implements Parcelable {
 
   public PlantListItem(int number) {
     myNumber = number;
-    myName = "Port " + number;
+    myName = "Plant " + number;
     myBitmap = null;
     myLastWatering = new Date(System.currentTimeMillis());
   }
