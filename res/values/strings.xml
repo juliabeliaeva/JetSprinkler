@@ -6,4 +6,69 @@
         <item>weekly</item>
         <item>monthly</item>
     </string-array>
+
+    <style name="normalText" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/black_color</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="titleText" parent="normalText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22dp</item>
+    </style>
+
+    <style name="secondaryText" parent="normalText">
+        <item name="android:textColor">@android:color/secondary_text_dark</item>
+        <item name="android:textSize">11dp</item>
+    </style>
+
+    <style name="button" parent="android:Widget.Button">
+        <item name="android:minHeight">48dip</item>
+        <item name="android:minWidth">64dip</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@color/dark_color</item>
+    </style>
+
+    <style name="editText" parent="android:Widget.EditText">
+        <item name="android:textColor">@color/black_color</item>
+    </style>
+
+    <style name="tab">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingLeft">16dip</item>
+        <item name="android:paddingRight">16dip</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minWidth">80dip</item>
+    </style>
+
+    <style name="tabText">
+        <item name="android:textColor">@color/white_color</item>
+        <item name="android:background">@color/dark_color</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <!-- v14 <item name="android:textAllCaps">true</item> -->
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:maxWidth">180dip</item>
+    </style>
+
+    <style name="spinner" parent="android:Widget.Spinner">
+    </style>
+
+    <color name="white_color">@android:color/background_light</color>
+    <color name="black_color">@android:color/primary_text_light</color>
+    <color name="secondary_black_color">@android:color/secondary_text_light</color>
+    <color name="light_color">#99cc00</color>
+    <color name="dark_color">#669900</color>
+
+    <style name="CustomTheme" parent="android:Theme.Light">
+        <item name="android:windowBackground">@color/white_color</item>
+        <item name="android:colorBackground">@color/dark_color</item>
+    </style>
+
+    <style name="CustomDialogTheme" parent="android:Theme.Holo.Dialog">
+        <item name="android:windowBackground">@color/white_color</item>
+        <item name="android:colorBackground">@color/dark_color</item>
+    </style>
 </resources>

@@ -18,7 +18,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:text="Water now!"
-                android:id="@+id/waterNow"/>
+                android:id="@+id/waterNow"
+                style="@style/button"/>
     </RelativeLayout>
 
     <ListView

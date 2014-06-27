@@ -8,29 +8,30 @@
                   android:layout_height="fill_parent" android:id="@+id/linearLayout"
                   android:layout_gravity="center_horizontal">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Water"
-                  android:id="@+id/waterText" android:textSize="22dp"/>
+                  android:id="@+id/waterText" style="@style/normalText"/>
         <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:id="@+id/intervalPicker" android:layout_weight="1" android:spinnerMode="dropdown"
+                 style="@style/spinner"
                 />
     </LinearLayout>
     <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
                   android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
                   android:id="@+id/linearLayout2">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="every"
-                  android:id="@+id/everyText" android:textSize="22dp"/>
+                  android:id="@+id/everyText" style="@style/normalText"/>
         <EditText android:layout_width="142dp" android:layout_height="wrap_content" android:inputType="number"
-                  android:ems="10" android:id="@+id/intervalText" android:imeOptions="actionDone"/>
+                  android:ems="10" android:id="@+id/intervalText" android:imeOptions="actionDone" style="@style/editText"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="day"
-                  android:textSize="22dp" android:id="@+id/unitText1"/>
+                  style="@style/normalText" android:id="@+id/unitText1"/>
     </LinearLayout>
     <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
                   android:layout_height="wrap_content" android:id="@+id/linearLayout3"
                   android:layout_gravity="center_horizontal">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="at"
-                  android:textSize="22dp" android:id="@+id/atText" android:layout_gravity="center"/>
+                  style="@style/normalText" android:id="@+id/atText" android:layout_gravity="center"/>
         <TimePicker android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:id="@+id/timePicker"/>
     </LinearLayout>
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OK"
-            android:id="@+id/saveRuleButton" android:layout_gravity="center_horizontal|bottom"/>
+            android:id="@+id/saveRuleButton" android:layout_gravity="center_horizontal|bottom" style="@style/button"/>
 </LinearLayout>

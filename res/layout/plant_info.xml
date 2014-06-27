@@ -59,12 +59,12 @@
                                         android:inputType="text"
                                         android:textStyle="bold"
                                         android:textSize="33dp"
-                                        android:hint="Plant Name" android:editable="false"/>
+                                        android:hint="Plant Name" android:editable="false" style="@style/editText"/>
                                 <TextView
                                         android:layout_width="fill_parent"
                                         android:layout_height="wrap_content"
                                         android:id="@+id/lastWatering"
-                                        android:textSize="11dp"
+                                        style="@style/secondaryText"
                                         android:layout_marginLeft="13dp"
                                         android:hint="Last watering yesterday at 11:11:11"/>
                             </LinearLayout>
@@ -81,7 +81,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Save"
-                                    android:id="@+id/savePlant"/>
+                                    android:id="@+id/savePlant"
+                                    style="@style/button"/>
                         </LinearLayout>
                         <LinearLayout
                                 android:id="@+id/center"
@@ -101,18 +102,25 @@
                                         android:orientation="horizontal"
                                         android:layout_width="fill_parent"
                                         android:layout_height="wrap_content">
+                                </LinearLayout>
+                                <GridLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content" android:columnCount="2"
+                                        android:rowCount="1">
                                     <TextView
                                             android:layout_width="wrap_content"
-                                            android:layout_height="fill_parent"
-                                            android:text="Watering timetable"
-                                            android:textSize="22dp"
-                                            android:id="@+id/timetableHeader" android:layout_gravity="center_vertical"/>
-                                    <Button
-                                            android:layout_width="fill_parent"
                                             android:layout_height="wrap_content"
-                                            android:text="Add Rule"
-                                            android:id="@+id/addRule" android:layout_gravity="center_horizontal|bottom"/>
-                                </LinearLayout>
+                                            android:text="Watering timetable"
+                                            style="@style/titleText"
+                                            android:id="@+id/timetableHeader" android:layout_gravity="center_vertical|left"
+                                            android:layout_row="0" android:layout_column="0"/>
+                                    <Button
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="+"
+                                            android:id="@+id/addRule" android:layout_gravity="center_horizontal|bottom|right" style="@style/button"
+                                            android:layout_row="0" android:layout_column="1"/>
+                                </GridLayout>
                                 <ListView
                                         android:layout_width="fill_parent"
                                         android:layout_height="fill_parent"
