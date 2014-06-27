@@ -66,7 +66,7 @@ public class PlantInfoActivity extends Activity {
     myImg = (ImageView) findViewById(R.id.imageView);
     myName = (EditText) findViewById(R.id.plantName);
     myDate = (TextView) findViewById(R.id.lastWatering);
-    Button btn = (Button) findViewById(R.id.button);
+    Button btn = (Button) findViewById(R.id.savePlant);
     Button addRule = (Button) findViewById(R.id.addRule);
     addRule.setOnClickListener(new View.OnClickListener() {
       @Override

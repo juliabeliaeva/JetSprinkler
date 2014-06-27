@@ -56,7 +56,9 @@ public class Connection {
 
   public void dispose() {
     try {
-      myBtSocket.close();
+      if (myBtSocket != null) {
+        myBtSocket.close();
+      }
     } catch (IOException e) {
 
     }

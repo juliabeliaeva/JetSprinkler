@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import com.intellij.jetSprinkler.Connection;
 import com.intellij.jetSprinkler.R;
@@ -58,6 +59,15 @@ public class Sprinkler extends Activity {
     });
 
     list.setAdapter(adapter);
+
+    Button showPlants = (Button) findViewById(R.id.showPlants); // todo this is temporary until we have proper navigation
+    showPlants.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(Sprinkler.this, PlantsListActivity.class);
+        startActivity(intent);
+      }
+    });
   }
 
 

@@ -13,8 +13,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".plantList.PlantsListActivity"/>
-        <activity android:name=".plantPage.PlantInfoActivity"/>
-        <activity android:name=".rules.EditRuleActivity"/>
+        <activity android:name=".plantPage.PlantInfoActivity" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".rules.EditRuleActivity" android:label="Edit rule" android:theme="@android:style/Theme.Holo.Dialog" android:windowSoftInputMode="stateHidden"/>
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />

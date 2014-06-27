@@ -5,8 +5,13 @@
               android:layout_height="fill_parent"
               android:weightSum="1">
     <ListView
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/listView"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show Plants"
+            android:id="@+id/showPlants" android:layout_gravity="center|bottom"/>
 </LinearLayout>
 
