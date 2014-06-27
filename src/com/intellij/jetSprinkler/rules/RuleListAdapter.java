@@ -2,13 +2,13 @@ package com.intellij.jetSprinkler.rules;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import com.intellij.jetSprinkler.R;
 
 import java.util.ArrayList;
@@ -36,16 +36,10 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     final Rule rule = rules.get(position);
     text.setText(rule.getHour() + ":" + rule.getMinute() + " every " + rule.getInterval() + " " + rule.getUnit().name);
 
-//    TimePicker picker = (TimePicker) row.findViewById(R.id.timePicker);
-//    Spinner spinner = (Spinner) row.findViewById(R.id.intervalPicker);
-//    picker.setIs24HourView(true);
-//    picker.setCurrentHour(rule.getHour());
-//    picker.setCurrentHour(rule.getMinute());
-
     return row;
   }
 
-  public static class Rule {
+  public static class Rule implements Parcelable {
     private Integer hour = 12;
     private Integer minute = 0;
     private int interval = 1;
@@ -82,6 +76,40 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     public void setUnit(UNIT unit) {
       this.unit = unit;
     }
+
+    @Override
+    public int describeContents() {
+      return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+      dest.writeInt(hour);
+      dest.writeInt(minute);
+      dest.writeInt(interval);
+      dest.writeInt(unit.ordinal());
+    }
+
+    public static final Parcelable.Creator<Rule> CREATOR = new Creator<Rule>() {
+      @Override
+      public Rule createFromParcel(Parcel source) {
+        int hour = source.readInt();
+        int minute = source.readInt();
+        int interval = source.readInt();
+        int ordinal = source.readInt();
+        Rule rule = new Rule();
+        rule.setHour(hour);
+        rule.setMinute(minute);
+        rule.setInterval(interval);
+        rule.setUnit(UNIT.values()[ordinal]);
+        return rule;
+      }
+
+      @Override
+      public Rule[] newArray(int size) {
+        return new Rule[size];
+      }
+    };
   }
 
   public static enum UNIT {

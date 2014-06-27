@@ -74,17 +74,12 @@
                         <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Add Rule"
-                                android:id="@+id/addRule" android:layout_gravity="left"/>
-                        <Button
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
                                 android:text="Save"
                                 android:id="@+id/button"/>
                     </LinearLayout>
                     <LinearLayout
                             android:id="@+id/center"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_below="@id/caption"
@@ -92,7 +87,12 @@
                         <ListView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:id="@+id/rulesList"/>
+                                android:id="@+id/rulesList" android:layout_gravity="top" android:layout_weight="1"/>
+                        <Button
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Add Rule"
+                                android:id="@+id/addRule" android:layout_gravity="center_horizontal|bottom"/>
                     </LinearLayout>
                 </RelativeLayout>
                 <LinearLayout
