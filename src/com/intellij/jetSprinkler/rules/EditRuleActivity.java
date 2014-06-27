@@ -32,6 +32,8 @@ public class EditRuleActivity extends Activity {
     // todo
 
     final NumberPicker numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
+    numberPicker.setMinValue(1);
+    numberPicker.setMaxValue(30);
     numberPicker.setValue(rule.getInterval());
 
     Button okButton = (Button) findViewById(R.id.saveRuleButton);
