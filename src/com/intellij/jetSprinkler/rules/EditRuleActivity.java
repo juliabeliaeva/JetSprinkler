@@ -26,7 +26,24 @@ public class EditRuleActivity extends Activity {
     timePicker.setCurrentMinute(rule.getMinute());
 
     Spinner spinner = (Spinner) findViewById(R.id.intervalPicker);
-    // todo
+    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+            R.array.units_array, android.R.layout.simple_spinner_item);
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    spinner.setAdapter(adapter);
+    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        final RuleListAdapter.UNIT[] values = RuleListAdapter.UNIT.values();
+        if (position >= 0 && position < values.length) {
+          rule.setUnit(values[position]);
+        }
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+      }
+    });
+    spinner.setSelection(rule.getUnit().ordinal());
 
     final EditText numberPicker = (EditText) findViewById(R.id.intervalText);
     numberPicker.setText("" + rule.getInterval());
