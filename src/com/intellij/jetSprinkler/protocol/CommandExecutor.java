@@ -71,17 +71,17 @@ public class CommandExecutor {
     }
 
     // check that result is OK : starts with (cmd "OK" 0xA)
-    if (length < 4) return null;
-    for (int i = 0; i < 3; i++) {
-      if (fullRes[i] != toAscii(s + "OK")[i]) return null;
+    if (length < 3) return null;
+    for (int i = 0; i < 2; i++) {
+      if (fullRes[i] != toAscii("OK")[i]) return null;
     }
 
-    if (length == 4) return expectsResult ? null : "";
+    if (length == 3) return expectsResult ? null : "";
 
     // count real checksum
     checksum = 0;
     byte asciiSharp = toAscii("#")[0];
-    int index = 4; //skip cmd+"ok"+"#10"
+    int index = 3; //skip cmd+"ok"+"#10"
     for (; index < length && fullRes[index] != asciiSharp; index++) {
       checksum += fullRes[index];
       checksum %= 65536;
@@ -97,8 +97,8 @@ public class CommandExecutor {
     if (checksum != Integer.parseInt(fromAscii(targetCSum))) return null;
 
     //extract result
-    byte[] result = new byte[index - 4];
-    System.arraycopy(fullRes, 3, result, 0, result.length);
+    byte[] result = new byte[index - 3];
+    System.arraycopy(fullRes, 3 , result, 0, result.length);
 
     return fromAscii(result);
   }
