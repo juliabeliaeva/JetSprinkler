@@ -30,7 +30,7 @@ public class PlantsListActivity extends Activity {
 
     int sprinklerCount = Protocol.getSprinklerCount();
     if (sprinklerCount==-1) {
-      finish();
+      throw new RuntimeException("hallo");
     }
     readState(sprinklerCount);
 
