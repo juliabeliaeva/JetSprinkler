@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class Connection {
   private static Connection ourInstance = new Connection();
-  private ConnectedThread myThread;
+  private volatile ConnectedThread myThread;
 
   public static Connection getInstance() {
     return ourInstance;
@@ -38,6 +38,7 @@ public class Connection {
     try {
       myBtSocket = device.createRfcommSocketToServiceRecord(SERIAL_PORT_PROTOCOL_UID);
     } catch (IOException e) {
+      Log.e("Conn", "Error creating service", e);
       return false;
     }
 
@@ -48,6 +49,7 @@ public class Connection {
       myThread = new ConnectedThread(myBtSocket);
       myThread.start();
     } catch (IOException e) {
+      Log.e("Conn", "Error connecting", e);
       return false;
     }
 
