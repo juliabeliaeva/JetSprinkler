@@ -60,13 +60,17 @@ void setTime1302(int seconds, int minutes, int hours, int dayofweek, int dayofmo
   DS1302_clock_burst_write( (uint8_t *) &rtc);
 }
 
+void getTime1302(ds1302_struct &rtc) {
+  // Read all clock data at once (burst mode).
+  DS1302_clock_burst_read( (uint8_t *) &rtc);
+}
+
 void test1302()
 {
   ds1302_struct rtc;
   char buffer[80];     // the code uses 70 characters.
 
-  // Read all clock data at once (burst mode).
-  DS1302_clock_burst_read( (uint8_t *) &rtc);
+  getTime1302(rtc);
 
   sprintf( buffer, "Time = %02d:%02d:%02d, ", \
     bcd2bin( rtc.h24.Hour10, rtc.h24.Hour), \

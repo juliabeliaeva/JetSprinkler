@@ -93,7 +93,7 @@ void processCmd() {
     }
   } else {         // no control sum
     // ignore for now
-    debug("no control sum supplied");
+    debug("(no checksum supplied)");
   }
   // process cmd
   switch (cmd) {
@@ -106,10 +106,29 @@ void processCmd() {
       sendData("3");
       break;
 
-    case 'S':
-      setTime1302(0, 50, 23, 4, 26, 6, 2014);  //todo: parse and set time
+    case 'S':    // S2014-06-26 22:58:00#
+    {
+      char *ptr = buffer;
+      int year = getInt(ptr), month = getInt(++ptr), day = getInt(++ptr), hour = getInt(++ptr), minute = getInt(++ptr), second = getInt(++ptr);
+      setTime1302(second, minute, hour, 1, day, month, year);
       ttyCmd.print("OK\n");
       break;
+    }
+    case 'G':    // 2014-06-26 22:58:00#
+    {
+      ds1302_struct rtc;
+      getTime1302(rtc);
+      sprintf(buffer, "%04d-%02d-%02d %02d:%02d:%02d", \
+        2000 + bcd2bin( rtc.Year10, rtc.Year), \
+        bcd2bin( rtc.Month10, rtc.Month), \
+        bcd2bin( rtc.Date10, rtc.Date), \
+        bcd2bin( rtc.h24.Hour10, rtc.h24.Hour), \
+        bcd2bin( rtc.Minutes10, rtc.Minutes), \
+        bcd2bin( rtc.Seconds10, rtc.Seconds));
+      ttyCmd.print("OK\n");
+      sendData(buffer);
+      break;
+    }
 
     case 'P':
       stopWatering();
