@@ -39,10 +39,7 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     TextView text = (TextView) row.findViewById(R.id.ruleText);
 
     final Rule rule = rules.get(position);
-    Calendar date = new GregorianCalendar();
-    date.set(Calendar.HOUR_OF_DAY, rule.getHour());
-    date.set(Calendar.MINUTE, 0);
-    text.setText(new SimpleDateFormat("HH:mm").format(date.getTime()) + " every " + (rule.getInterval() == 1 ? rule.getUnit().name : rule.getInterval() + " " + rule.getUnit().name + "s"));
+    text.setText(rule.toString());
 
     return row;
   }
@@ -79,6 +76,19 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     @Override
     public int describeContents() {
       return 0;
+    }
+
+    public String toString() {
+      String datePresentation;
+      if (unit.equals(UNIT.MINUTE)) {
+        datePresentation = "";
+      } else {
+        Calendar date = new GregorianCalendar();
+        date.set(Calendar.HOUR_OF_DAY, getHour());
+        date.set(Calendar.MINUTE, 0);
+        datePresentation = new SimpleDateFormat("HH:mm").format(date.getTime()) + " ";
+      }
+      return datePresentation + "every " + (getInterval() == 1 ? getUnit().name : getInterval() + " " + getUnit().name + "s");
     }
 
     @Override
