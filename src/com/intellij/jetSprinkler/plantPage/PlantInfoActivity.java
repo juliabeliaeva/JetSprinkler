@@ -6,14 +6,16 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.intellij.jetSprinkler.R;
+import com.intellij.jetSprinkler.plantList.PlantListAdapter;
 import com.intellij.jetSprinkler.plantList.PlantListItem;
+import com.intellij.jetSprinkler.rules.RuleListAdapter;
+import com.intellij.jetSprinkler.rules.SwipeDismissListViewTouchListener;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlantInfoActivity extends Activity {
   private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -23,6 +25,9 @@ public class PlantInfoActivity extends Activity {
   private EditText myName;
   private TextView myDate;
 
+  private final ArrayList<RuleListAdapter.Rule> rules = new ArrayList<RuleListAdapter.Rule>();
+  private RuleListAdapter rulesListAdapter;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -30,10 +35,40 @@ public class PlantInfoActivity extends Activity {
 
     myData = (PlantListItem) getIntent().getExtras().get(PLANT_DATA);
 
+    rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
+    ListView list = ((ListView) findViewById(R.id.rulesList));
+    list.setAdapter(rulesListAdapter);
+    SwipeDismissListViewTouchListener touchListener =
+    new SwipeDismissListViewTouchListener(
+                     list,
+                     new SwipeDismissListViewTouchListener.DismissCallbacks() {
+                       @Override
+                       public boolean canDismiss(int position) {
+                         return true;
+                       }
+
+                       public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                 for (int position : reverseSortedPositions) {
+                                       rulesListAdapter.remove(rulesListAdapter.getItem(position));
+                                   }
+                                 rulesListAdapter.notifyDataSetChanged();
+                             }
+                       });
+     list.setOnTouchListener(touchListener);
+     list.setOnScrollListener(touchListener.makeScrollListener());
+
     myImg = (ImageView) findViewById(R.id.imageView);
     myName = (EditText) findViewById(R.id.plantName);
     myDate = (TextView) findViewById(R.id.lastWatering);
     Button btn = (Button) findViewById(R.id.button);
+    Button addRule = (Button) findViewById(R.id.addRule);
+    addRule.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        rules.add(new RuleListAdapter.Rule());
+        rulesListAdapter.notifyDataSetChanged();
+      }
+    });
 
     updateInfo();
 

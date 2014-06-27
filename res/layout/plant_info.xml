@@ -74,6 +74,11 @@
                         <Button
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:text="Add Rule"
+                                android:id="@+id/addRule" android:layout_gravity="left"/>
+                        <Button
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:text="Save"
                                 android:id="@+id/button"/>
                     </LinearLayout>
@@ -84,6 +89,10 @@
                             android:layout_height="fill_parent"
                             android:layout_below="@id/caption"
                             android:layout_above="@id/floor">
+                        <ListView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:id="@+id/rulesList"/>
                     </LinearLayout>
                 </RelativeLayout>
                 <LinearLayout
