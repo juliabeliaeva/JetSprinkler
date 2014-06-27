@@ -10,7 +10,7 @@ public class CommandExecutor {
   public static final int COMMAND_TIMEOUT = 1000;
 
   //null is error
-  public static String executeCommand(String s, String data) {
+  public static String executeCommand(String s, String data, boolean expectsResult) {
     //clean buffers (bytes may be left from the previous command)
     while (true) {
       if (Connection.getInstance().read().length == 0) break;
@@ -70,10 +70,13 @@ public class CommandExecutor {
     }
 
     // check that result is OK : starts with (cmd "OK" 0xA)
+    if (length < 4) return null;
     for (int i = 0; i < 3; i++) {
       if (fullRes[i] != toAscii(s + "OK")[i]) return null;
     }
     if (fullRes[3] != 0x10) return null;
+
+    if (length == 4) return expectsResult ? null : "";
 
     // count real checksum
     checksum = 0;
@@ -83,6 +86,9 @@ public class CommandExecutor {
       checksum += fullRes[index];
       checksum %= 65536;
     }
+
+    //no checksum
+    if (index == length) return null;
 
     //extract target checksum
     byte[] targetCSum = new byte[fullRes.length - index - 2];

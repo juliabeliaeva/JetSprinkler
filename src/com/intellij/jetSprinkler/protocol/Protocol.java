@@ -1,20 +1,12 @@
 package com.intellij.jetSprinkler.protocol;
 
-import com.intellij.jetSprinkler.Connection;
-
-import java.nio.charset.Charset;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Protocol {
 
 
   public static String version() {
-    Connection.getInstance().write(toAscii("A"));
-    wait(200);
-    byte[] read = Connection.getInstance().read();
-    new String()
+    return CommandExecutor.executeCommand("V",null, false);
   }
 
 
