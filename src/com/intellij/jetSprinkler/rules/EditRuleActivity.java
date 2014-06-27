@@ -20,15 +20,17 @@ public class EditRuleActivity extends Activity {
     rule = (RuleListAdapter.Rule) getIntent().getExtras().get(RULE_DATA);
     ruleIndex = getIntent().getIntExtra(RULE_INDEX_DATA, -1);
 
-    final TimePicker timePicker = (TimePicker) findViewById(R.id.timePicker);
-    timePicker.setIs24HourView(true);
-    timePicker.setCurrentHour(rule.getHour());
-    timePicker.setCurrentMinute(rule.getMinute());
+    final NumberPicker timePicker = (NumberPicker) findViewById(R.id.hourPicker);
+    timePicker.setMinValue(0);
+    timePicker.setMaxValue(23);
+    timePicker.setValue(rule.getHour());
 
-    final TextView unitText = (TextView) findViewById(R.id.unitText1);
-    unitText.setText(rule.getUnit().name);
+    final NumberPicker intervalPicker = (NumberPicker) findViewById(R.id.intervalPicker);
+    intervalPicker.setMinValue(1);
+    intervalPicker.setMaxValue(20);
+    intervalPicker.setValue(rule.getInterval());
 
-    Spinner spinner = (Spinner) findViewById(R.id.intervalPicker);
+    Spinner spinner = (Spinner) findViewById(R.id.unitPicker);
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
             R.array.units_array, android.R.layout.simple_spinner_item);
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -39,7 +41,6 @@ public class EditRuleActivity extends Activity {
         final RuleListAdapter.UNIT[] values = RuleListAdapter.UNIT.values();
         if (position >= 0 && position < values.length) {
           rule.setUnit(values[position]);
-          unitText.setText(values[position].name + (rule.getInterval() == 1 ? "" : "s"));
         }
       }
 
@@ -49,17 +50,12 @@ public class EditRuleActivity extends Activity {
     });
     spinner.setSelection(rule.getUnit().ordinal());
 
-    final EditText numberPicker = (EditText) findViewById(R.id.intervalText);
-    numberPicker.setText("" + rule.getInterval());
-    numberPicker.setWidth(timePicker.getWidth());
-
     Button okButton = (Button) findViewById(R.id.saveRuleButton);
     okButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        rule.setHour(timePicker.getCurrentHour());
-        rule.setMinute(timePicker.getCurrentMinute());
-        rule.setInterval(Integer.decode(numberPicker.getText().toString()));
+        rule.setHour(timePicker.getValue());
+        rule.setInterval(intervalPicker.getValue());
 
         Intent intent = new Intent();
         intent.putExtra(RULE_DATA, rule);

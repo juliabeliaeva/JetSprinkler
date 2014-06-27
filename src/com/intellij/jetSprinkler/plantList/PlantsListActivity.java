@@ -33,7 +33,7 @@ public class PlantsListActivity extends Activity {
     adapter = new PlantListAdapter(this,
             R.layout.plantlist_item_row, myPlants);
 
-    ListView list = ((ListView) findViewById(R.id.listView));
+    ListView list = ((ListView) findViewById(R.id.plantsListView));
     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
