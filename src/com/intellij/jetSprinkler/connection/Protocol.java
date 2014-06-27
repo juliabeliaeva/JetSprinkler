@@ -49,6 +49,26 @@ public class Protocol {
     return CommandExecutor.executeCommand("T", serialize(t), true) != null;
   }
 
+  /*
+Формат строк в расписании.
+flags:n:volume:start:period
+flags:n:volume:sensor:value
+
+flags ::= 0..255
+ t000rawe - двоичное представление
+   t - тип правила: 0 - по времени, 1 - по сенсору
+   r - тип контроля значения: 0 - sensor<value, 1 - sensor>value
+   a - включить сигнал
+   w - полить
+   e - 0 - disabled, 1 - enabled
+n ::= номер устройства для полива (начиная с 1?)
+volume ::= длительность [полива] (в секундах?)
+start  ::= время первого действия (в минутах от 01.01.2014 00:00)
+period ::= период действия (в минутах); должен быть больше, чем длительность
+sensor ::= номер сенсора, значение которого проверяется
+value  ::= значение, с которым сравнивается значение сенсора
+
+*/
   private static String serialize(Timetable t) {
     return null;
   }

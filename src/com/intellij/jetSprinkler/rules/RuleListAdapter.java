@@ -37,19 +37,4 @@ public class RuleListAdapter extends ArrayAdapter<Rule> {
 
     return row;
   }
-
-  public static enum UNIT {
-    DAY("day", "daily"),
-    WEEK("week", "weekly"),
-    MONTHS("month", "monthly"),
-    MINUTE("minute", "minute"); // ?
-
-    public final String name;
-    public final String adjective;
-
-    UNIT(String name, String adjective) {
-      this.name = name;
-      this.adjective = adjective;
-    }
-  }
 }

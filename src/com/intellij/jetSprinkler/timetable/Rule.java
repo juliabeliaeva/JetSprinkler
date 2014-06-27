@@ -2,7 +2,6 @@ package com.intellij.jetSprinkler.timetable;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.intellij.jetSprinkler.rules.RuleListAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,7 +13,7 @@ import java.util.GregorianCalendar;
 public class Rule implements Parcelable {
   private Integer hour = 12;
   private int interval = 1;
-  private RuleListAdapter.UNIT unit = RuleListAdapter.UNIT.DAY;
+  private UNIT unit = UNIT.DAY;
 
   public Integer getHour() {
     return hour;
@@ -32,11 +31,11 @@ public class Rule implements Parcelable {
     this.interval = interval;
   }
 
-  public RuleListAdapter.UNIT getUnit() {
+  public UNIT getUnit() {
     return unit;
   }
 
-  public void setUnit(RuleListAdapter.UNIT unit) {
+  public void setUnit(UNIT unit) {
     this.unit = unit;
   }
 
@@ -47,7 +46,7 @@ public class Rule implements Parcelable {
 
   public String toString() {
     String datePresentation;
-    if (unit.equals(RuleListAdapter.UNIT.MINUTE)) {
+    if (unit.equals(UNIT.MINUTE)) {
       datePresentation = "";
     } else {
       Calendar date = new GregorianCalendar();
@@ -74,7 +73,7 @@ public class Rule implements Parcelable {
       Rule rule = new Rule();
       rule.setHour(hour);
       rule.setInterval(interval);
-      rule.setUnit(RuleListAdapter.UNIT.values()[ordinal]);
+      rule.setUnit(UNIT.values()[ordinal]);
       return rule;
     }
 
@@ -83,4 +82,19 @@ public class Rule implements Parcelable {
       return new Rule[size];
     }
   };
+
+  public static enum UNIT {
+    DAY("day", "daily"),
+    WEEK("week", "weekly"),
+    MONTHS("month", "monthly"),
+    MINUTE("minute", "minute"); // ?
+
+    public final String name;
+    public final String adjective;
+
+    UNIT(String name, String adjective) {
+      this.name = name;
+      this.adjective = adjective;
+    }
+  }
 }

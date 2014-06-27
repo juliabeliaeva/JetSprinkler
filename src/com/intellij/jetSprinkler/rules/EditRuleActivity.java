@@ -42,7 +42,7 @@ public class EditRuleActivity extends Activity {
     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        final RuleListAdapter.UNIT[] values = RuleListAdapter.UNIT.values();
+        final Rule.UNIT[] values = Rule.UNIT.values();
         if (position >= 0 && position < values.length) {
           rule.setUnit(values[position]);
         }
