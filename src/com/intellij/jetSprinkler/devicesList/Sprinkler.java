@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.connection.Connection;
-import com.intellij.jetSprinkler.connection.Protocol;
+import com.intellij.jetSprinkler.connection.protocol.Protocol;
 import com.intellij.jetSprinkler.plantList.PlantsListActivity;
 
 import java.util.ArrayList;

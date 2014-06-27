@@ -1,4 +1,6 @@
-package com.intellij.jetSprinkler.connection;
+package com.intellij.jetSprinkler.connection.protocol;
+
+import com.intellij.jetSprinkler.connection.Connection;
 
 import java.nio.charset.Charset;
 import java.util.LinkedList;

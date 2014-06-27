@@ -1,4 +1,4 @@
-package com.intellij.jetSprinkler.rules;
+package com.intellij.jetSprinkler.plantPage.rules;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import com.intellij.jetSprinkler.R;
-import com.intellij.jetSprinkler.timetable.Rule;
 
 public class EditRuleActivity extends Activity {
   public static final String RULE_DATA = "RULE_DATA";

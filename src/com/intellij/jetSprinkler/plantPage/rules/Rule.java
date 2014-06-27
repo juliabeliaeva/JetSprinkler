@@ -1,4 +1,4 @@
-package com.intellij.jetSprinkler.timetable;
+package com.intellij.jetSprinkler.plantPage.rules;
 
 import android.os.Parcel;
 import android.os.Parcelable;

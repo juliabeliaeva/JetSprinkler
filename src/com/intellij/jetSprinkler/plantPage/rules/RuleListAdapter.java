@@ -1,4 +1,4 @@
-package com.intellij.jetSprinkler.rules;
+package com.intellij.jetSprinkler.plantPage.rules;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.intellij.jetSprinkler.R;
-import com.intellij.jetSprinkler.timetable.Rule;
 
 import java.util.ArrayList;
 
