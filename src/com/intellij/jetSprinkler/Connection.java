@@ -58,8 +58,13 @@ public class Connection {
 
   public void dispose() {
     try {
+      if (myThread != null) {
+        myThread.interrupt();
+        myThread = null;
+      }
       if (myBtSocket != null) {
         myBtSocket.close();
+        myBtSocket = null;
       }
     } catch (IOException e) {
 
@@ -75,13 +80,11 @@ public class Connection {
   }
 
   private class ConnectedThread extends Thread {
-    private final BluetoothSocket mySocket;
     private final InputStream myInStream;
     private final OutputStream myOutStream;
     private final ArrayList<Byte> myBuffer = new ArrayList<Byte>();
 
     public ConnectedThread(BluetoothSocket socket) {
-      mySocket = socket;
       InputStream tmpIn = null;
       OutputStream tmpOut = null;
 
@@ -100,7 +103,7 @@ public class Connection {
       byte[] buffer = new byte[256];
       int bytes;
 
-      while (true) {
+      while (!isInterrupted()) {
         try {
           if (myInStream.available() > 0) {
             bytes = myInStream.read(buffer);
@@ -122,6 +125,7 @@ public class Connection {
         for (int i = 0; i < myBuffer.size(); i++) {
           res[i] = myBuffer.get(i);
         }
+        myBuffer.clear();
         return res;
       }
     }

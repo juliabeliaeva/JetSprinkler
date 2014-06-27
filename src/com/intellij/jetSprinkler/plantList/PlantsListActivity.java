@@ -18,9 +18,8 @@ import java.util.ArrayList;
 public class PlantsListActivity extends Activity {
   public static final String NAME = "NAME_";
   public static final String SIZE = "SIZE";
-  public static final String DEVICE = "device";
-  private final ArrayList<PlantListItem> myPlants = new ArrayList<PlantListItem>();
   public static final int MY_CHILD_ACTIVITY = 666;
+  private final ArrayList<PlantListItem> myPlants = new ArrayList<PlantListItem>();
 
   private PlantListAdapter adapter;
 
@@ -30,6 +29,9 @@ public class PlantsListActivity extends Activity {
     setContentView(R.layout.plants_list);
 
     int sprinklerCount = Protocol.getSprinklerCount();
+    if (sprinklerCount==-1) {
+      finish();
+    }
     readState(sprinklerCount);
 
     adapter = new PlantListAdapter(this,

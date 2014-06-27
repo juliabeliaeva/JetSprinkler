@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.intellij.jetSprinkler.Connection;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.plantList.PlantsListActivity;
+import com.intellij.jetSprinkler.protocol.Protocol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +50,14 @@ public class Sprinkler extends Activity {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         StationData station = myDevices.get(position);
-        if ( Connection.getInstance().init(station.getAddress())){
-          Intent i = new Intent(Sprinkler.this, PlantsListActivity.class);
-          i.putExtra(PlantsListActivity.DEVICE, station);
-          startActivity(i);
-          finish();
-        }
+        Connection.getInstance().dispose();
+        if (!Connection.getInstance().init(station.getAddress())) return;
+
+        int sprinklerCount = Protocol.getSprinklerCount();
+        if (sprinklerCount == -1) return;
+
+        Intent i = new Intent(Sprinkler.this, PlantsListActivity.class);
+        startActivity(i);
       }
     });
 
