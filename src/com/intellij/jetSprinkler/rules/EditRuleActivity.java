@@ -6,19 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import com.intellij.jetSprinkler.R;
+import com.intellij.jetSprinkler.timetable.Rule;
 
 public class EditRuleActivity extends Activity {
   public static final String RULE_DATA = "RULE_DATA";
   public static final String RULE_INDEX_DATA = "RULE_INDEX_DATA";
   public static final String EDITOR_HEADER = "EDITOR_HEADER";
-  private RuleListAdapter.Rule rule;
+  private Rule rule;
   private int ruleIndex;
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.edit_rule);
 
-    rule = (RuleListAdapter.Rule) getIntent().getExtras().get(RULE_DATA);
+    rule = (Rule) getIntent().getExtras().get(RULE_DATA);
     ruleIndex = getIntent().getIntExtra(RULE_INDEX_DATA, -1);
     final String header = getIntent().getStringExtra(EDITOR_HEADER);
     setTitle(header);

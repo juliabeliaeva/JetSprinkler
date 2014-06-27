@@ -1,4 +1,6 @@
-package com.intellij.jetSprinkler.protocol;
+package com.intellij.jetSprinkler.connection;
+
+import com.intellij.jetSprinkler.timetable.Timetable;
 
 import java.text.DateFormat;
 import java.text.ParseException;

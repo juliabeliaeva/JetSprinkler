@@ -1,4 +1,4 @@
-package com.intellij.jetSprinkler;
+package com.intellij.jetSprinkler.connection;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

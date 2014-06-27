@@ -3,7 +3,7 @@ package com.intellij.jetSprinkler.plantList;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.intellij.jetSprinkler.protocol.Timetable;
+import com.intellij.jetSprinkler.timetable.Timetable;
 
 import java.util.Date;
 

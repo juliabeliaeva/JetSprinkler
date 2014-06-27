@@ -15,6 +15,7 @@ import com.intellij.jetSprinkler.plantList.PlantListItem;
 import com.intellij.jetSprinkler.rules.EditRuleActivity;
 import com.intellij.jetSprinkler.rules.RuleListAdapter;
 import com.intellij.jetSprinkler.rules.SwipeDismissListViewTouchListener;
+import com.intellij.jetSprinkler.timetable.Rule;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class PlantInfoActivity extends Activity {
   private TextView myDate;
   private TextView timeTableHeader;
 
-  private final ArrayList<RuleListAdapter.Rule> rules = new ArrayList<RuleListAdapter.Rule>();
+  private final ArrayList<Rule> rules = new ArrayList<Rule>();
   private RuleListAdapter rulesListAdapter;
 
   @Override
@@ -75,7 +76,7 @@ public class PlantInfoActivity extends Activity {
     addRule.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        editRule(new RuleListAdapter.Rule(), rules.size());
+        editRule(new Rule(), rules.size());
       }
     });
 
@@ -127,7 +128,7 @@ public class PlantInfoActivity extends Activity {
       view.setBackground(new BitmapDrawable(imageBitmap));
       myData.setBitmap(imageBitmap);
     } else if (requestCode == REQUEST_EDIT_RULE && resultCode == RESULT_OK) {
-      RuleListAdapter.Rule rule = (RuleListAdapter.Rule) data.getExtras().get(EditRuleActivity.RULE_DATA);
+      Rule rule = (Rule) data.getExtras().get(EditRuleActivity.RULE_DATA);
       int index = data.getIntExtra(EditRuleActivity.RULE_INDEX_DATA, -1);
       if (index >=0 && index < rules.size()) {
         rules.set(index, rule);
@@ -141,7 +142,7 @@ public class PlantInfoActivity extends Activity {
     }
   }
 
-  public void editRule(RuleListAdapter.Rule rule, int position) {
+  public void editRule(Rule rule, int position) {
     Intent intent = new Intent(PlantInfoActivity.this, EditRuleActivity.class);
     intent.putExtra(EditRuleActivity.RULE_DATA, rule);
     intent.putExtra(EditRuleActivity.RULE_INDEX_DATA, position);

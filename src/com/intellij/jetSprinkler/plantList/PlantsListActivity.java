@@ -8,10 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.intellij.jetSprinkler.Connection;
+import com.intellij.jetSprinkler.connection.Connection;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.plantPage.PlantInfoActivity;
-import com.intellij.jetSprinkler.protocol.Protocol;
+import com.intellij.jetSprinkler.connection.Protocol;
 
 import java.util.ArrayList;
 
