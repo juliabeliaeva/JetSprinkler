@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.Spinner;
-import android.widget.TimePicker;
+import android.widget.*;
 import com.intellij.jetSprinkler.R;
 
 public class EditRuleActivity extends Activity {
@@ -31,10 +28,8 @@ public class EditRuleActivity extends Activity {
     Spinner spinner = (Spinner) findViewById(R.id.intervalPicker);
     // todo
 
-    final NumberPicker numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
-    numberPicker.setMinValue(1);
-    numberPicker.setMaxValue(30);
-    numberPicker.setValue(rule.getInterval());
+    final EditText numberPicker = (EditText) findViewById(R.id.intervalText);
+    numberPicker.setText("" + rule.getInterval());
 
     Button okButton = (Button) findViewById(R.id.saveRuleButton);
     okButton.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +37,7 @@ public class EditRuleActivity extends Activity {
       public void onClick(View v) {
         rule.setHour(timePicker.getCurrentHour());
         rule.setMinute(timePicker.getCurrentMinute());
-        rule.setInterval(numberPicker.getValue());
+        rule.setInterval(Integer.decode(numberPicker.getText().toString()));
 
         Intent intent = new Intent();
         intent.putExtra(RULE_DATA, rule);

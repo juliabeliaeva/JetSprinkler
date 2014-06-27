@@ -7,28 +7,62 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        <TimePicker
+            android:layout_height="wrap_content" android:gravity="center_vertical|center_horizontal">
+        <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/timePicker" android:layout_gravity="center_horizontal"/>
+                android:layout_height="fill_parent">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Water"
+                    android:id="@+id/waterText"
+                    android:textSize="22dp"
+                    android:layout_gravity="center_horizontal|left"/>
+            <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/intervalPicker" android:layout_weight="1" android:spinnerMode="dropdown"
+                    android:layout_gravity="right"/>
+        </LinearLayout>
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
             <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="136dp"
+                    android:layout_height="wrap_content"
                     android:text="every"
-                    android:id="@+id/textView"/>
-            <NumberPicker
+                    android:id="@+id/everyText"
+                    android:textSize="22dp"
+                    android:layout_gravity="center_horizontal|top"/>
+            <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/numberPicker"/>
-            <Spinner
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/intervalText" android:layout_gravity="right"/>
+            <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/intervalPicker" android:layout_weight="1" android:spinnerMode="dropdown"/>
+                    android:text="day"
+                    android:textSize="22dp"
+                    android:id="@+id/unitText" android:layout_gravity="center_horizontal|top"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="at"
+                    android:textSize="22dp"
+                    android:id="@+id/atText" android:layout_gravity="center"/>
+            <TimePicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/timePicker"/>
         </LinearLayout>
     </LinearLayout>
     <Button

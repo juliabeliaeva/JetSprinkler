@@ -113,9 +113,9 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
   }
 
   public static enum UNIT {
-    DAY("days"),
-    WEEK("weeks"),
-    MONTHS("months");
+    DAY("daily"),
+    WEEK("weekly"),
+    MONTHS("monthly");
 
     private final String name;
 
