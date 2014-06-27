@@ -27,41 +27,42 @@
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-                    <RelativeLayout
-                            android:id="@+id/info2"
+                    <GridLayout
+                            android:id="@+id/layout"
                             android:orientation="vertical"
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent">
+                            android:layout_height="fill_parent" android:rowCount="2" android:columnCount="1">
                         <LinearLayout
-                                android:id="@+id/caption"
-                                android:orientation="horizontal"
+                                android:orientation="vertical"
                                 android:layout_width="fill_parent"
-                                android:layout_height="wrap_content">
-
-                            <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/imageView"
-                                    android:minHeight="250px"
-                                    android:minWidth="250px"
-                                    android:background="#333333"
-                                    />
+                                android:layout_height="wrap_content" android:layout_gravity="center_horizontal|top">
                             <LinearLayout
-                                    android:id="@+id/info2"
                                     android:orientation="vertical"
                                     android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent">
-
-                                <EditText
+                                    android:layout_height="wrap_content" android:background="@color/transparent">
+                                <GridLayout
                                         android:layout_width="fill_parent"
-                                        android:layout_height="wrap_content"
-                                        android:id="@+id/plantName"
-                                        android:inputType="text"
-                                        android:textStyle="bold"
-                                        android:textSize="33dp"
-                                        android:hint="Plant Name" android:editable="false" style="@style/editText"/>
+                                        android:layout_height="fill_parent" android:columnCount="2" android:rowCount="1"
+                                        android:id="@+id/nameGrid" >
+                                    <EditText
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:id="@+id/plantName"
+                                            android:inputType="text"
+                                            android:textStyle="bold"
+                                            android:textSize="33dp"
+                                            android:hint="Plant Name" android:editable="false" style="@style/editText"
+                                            android:layout_gravity="center_vertical" android:layout_column="0"
+                                            android:layout_row="0"/>
+                                    <Button
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Take a Picture"
+                                            android:id="@+id/takePicture" android:layout_gravity="center_vertical|right" style="@style/button"
+                                            android:layout_column="1" android:layout_row="0"/>
+                                </GridLayout>
                                 <TextView
-                                        android:layout_width="fill_parent"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:id="@+id/lastWatering"
                                         style="@style/secondaryText"
@@ -70,64 +71,63 @@
                             </LinearLayout>
                         </LinearLayout>
                         <LinearLayout
-                                android:id="@+id/floor"
                                 android:orientation="vertical"
                                 android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:layout_alignParentBottom="true">
-                            <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Save"
-                                    android:id="@+id/savePlant"
-                                    style="@style/button"/>
-                        </LinearLayout>
-                        <LinearLayout
-                                android:id="@+id/center"
-                                android:orientation="vertical"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_below="@id/caption"
-                                android:layout_above="@id/floor">
+                                android:layout_height="wrap_content">
                             <LinearLayout
-                                    android:id="@+id/linear"
+                                    android:id="@+id/center"
                                     android:orientation="vertical"
                                     android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:layout_below="@id/caption"
-                                    android:layout_above="@id/floor">
-                                <LinearLayout
-                                        android:orientation="horizontal"
-                                        android:layout_width="fill_parent"
-                                        android:layout_height="wrap_content">
-                                </LinearLayout>
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/transparent"
+                                    android:baselineAligned="false">
                                 <GridLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content" android:columnCount="2"
-                                        android:rowCount="1">
-                                    <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Watering timetable"
-                                            style="@style/titleText"
-                                            android:id="@+id/timetableHeader" android:layout_gravity="center_vertical|left"
-                                            android:layout_row="0" android:layout_column="0"/>
-                                    <Button
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="+"
-                                            android:id="@+id/addRule" android:layout_gravity="center_horizontal|bottom|right" style="@style/button"
-                                            android:layout_row="0" android:layout_column="1"/>
-                                </GridLayout>
-                                <ListView
                                         android:layout_width="fill_parent"
-                                        android:layout_height="fill_parent"
-                                        android:id="@+id/rulesList" android:layout_gravity="top" android:layout_weight="1"/>
+                                        android:layout_height="wrap_content" android:rowCount="2" android:columnCount="1"
+                                        android:layout_gravity="bottom">
+                                    <GridLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content" android:columnCount="2"
+                                            android:rowCount="1" android:layout_gravity="top">
+                                        <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Watering timetable"
+                                                style="@style/titleText"
+                                                android:id="@+id/timetableHeader" android:layout_gravity="center_vertical|left"
+                                                android:layout_row="0" android:layout_column="0"
+                                                android:layout_marginLeft="13dp"/>
+                                        <Button
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="+"
+                                                android:id="@+id/addRule" android:layout_gravity="center_horizontal|bottom|right" style="@style/button"
+                                                android:layout_row="0" android:layout_column="1"/>
+                                    </GridLayout>
+                                    <ListView
+                                            android:layout_width="fill_parent"
+                                            android:layout_height="wrap_content"
+                                            android:id="@+id/rulesList" android:layout_weight="1"
+                                            android:layout_gravity="bottom"/>
+                                </GridLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                    android:id="@+id/floor"
+                                    android:orientation="vertical"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:background="@color/transparent" android:layout_gravity="bottom"
+                                    android:gravity="center|bottom">
+                                <Button
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Save"
+                                        android:id="@+id/savePlant"
+                                        style="@style/button"/>
                             </LinearLayout>
                         </LinearLayout>
-                    </RelativeLayout>
+                    </GridLayout>
                 </LinearLayout>
                 <LinearLayout
                         android:id="@+id/stat"

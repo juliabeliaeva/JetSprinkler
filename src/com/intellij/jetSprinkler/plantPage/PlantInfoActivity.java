@@ -3,6 +3,7 @@ package com.intellij.jetSprinkler.plantPage;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -21,7 +22,6 @@ public class PlantInfoActivity extends Activity {
   private static final int REQUEST_EDIT_RULE = 2;
   public static final String PLANT_DATA = "plantData";
   private PlantListItem myData;
-  private ImageView myImg;
   private EditText myName;
   private TextView myDate;
 
@@ -63,7 +63,6 @@ public class PlantInfoActivity extends Activity {
       }
     });
 
-    myImg = (ImageView) findViewById(R.id.imageView);
     myName = (EditText) findViewById(R.id.plantName);
     myDate = (TextView) findViewById(R.id.lastWatering);
     Button btn = (Button) findViewById(R.id.savePlant);
@@ -88,7 +87,8 @@ public class PlantInfoActivity extends Activity {
       }
     });
 
-    myImg.setOnClickListener(new View.OnClickListener() {
+    Button takeAPicture = (Button) findViewById(R.id.takePicture);
+    takeAPicture.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -104,12 +104,9 @@ public class PlantInfoActivity extends Activity {
     if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
       Bundle extras = data.getExtras();
       Bitmap imageBitmap = (Bitmap) extras.get("data");
-      int size = imageBitmap.getWidth();
-      int y = (imageBitmap.getHeight() - size) / 2;
-      Bitmap cropped = Bitmap.createBitmap(imageBitmap, 0, y, size, size);
-      Bitmap resized = Bitmap.createScaledBitmap(cropped, 250, 250, true);
-      myData.setBitmap(resized);
-      myImg.setImageBitmap(resized);
+      View view = findViewById(R.id.info);
+      view.setBackground(new BitmapDrawable(imageBitmap));
+      myData.setBitmap(imageBitmap);
     } else if (requestCode == REQUEST_EDIT_RULE && resultCode == RESULT_OK) {
       RuleListAdapter.Rule rule = (RuleListAdapter.Rule) data.getExtras().get(EditRuleActivity.RULE_DATA);
       int index = data.getIntExtra(EditRuleActivity.RULE_INDEX_DATA, -1);
@@ -131,7 +128,8 @@ public class PlantInfoActivity extends Activity {
   }
 
   private void updateInfo() {
-    myImg.setImageBitmap(myData.getBitmap());
+    View view = findViewById(R.id.info);
+    view.setBackground(new BitmapDrawable(myData.getBitmap()));
     myName.setText(myData.getName());
     myDate.setText("Last watering on " + DateFormat.getInstance().format(myData.getLastWatering()));
   }

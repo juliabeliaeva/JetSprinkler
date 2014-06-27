@@ -9,5 +9,6 @@
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="39dp"
+            android:layout_marginLeft="13dp"
             android:id="@+id/ruleText" android:layout_weight="0.10" style="@style/normalText"/>
 </LinearLayout>

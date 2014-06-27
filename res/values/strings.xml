@@ -39,6 +39,8 @@
     <color name="secondary_black_color">@android:color/secondary_text_light</color>
     <color name="light_color">#99cc00</color>
     <color name="dark_color">#669900</color>
+    <color name="transparent">#99000000</color>
+    <!--<color name="transparent">@android:color/transparent</color>-->
 
     <style name="CustomTheme" parent="AppTheme">
     </style>
