@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.intellij.jetSprinkler.R;
+import com.intellij.jetSprinkler.connection.Protocol;
 import com.intellij.jetSprinkler.plantList.PlantListItem;
 import com.intellij.jetSprinkler.rules.EditRuleActivity;
 import com.intellij.jetSprinkler.rules.RuleListAdapter;
 import com.intellij.jetSprinkler.rules.SwipeDismissListViewTouchListener;
 import com.intellij.jetSprinkler.timetable.Rule;
+import com.intellij.jetSprinkler.timetable.Timetable;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class PlantInfoActivity extends Activity {
   private static final int REQUEST_EDIT_RULE = 2;
   public static final String PLANT_DATA = "plantData";
   private PlantListItem myData;
+  private Timetable myTimetable;
   private EditText myName;
   private TextView myDate;
   private TextView timeTableHeader;
@@ -38,6 +41,7 @@ public class PlantInfoActivity extends Activity {
     setContentView(R.layout.plant_info);
 
     myData = (PlantListItem) getIntent().getExtras().get(PLANT_DATA);
+    myTimetable = Protocol.getTimetable();
 
     rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
     ListView list = ((ListView) findViewById(R.id.rulesList));
@@ -95,6 +99,10 @@ public class PlantInfoActivity extends Activity {
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        if (!Protocol.setTimetable(myTimetable)){
+          //todo show error
+          return;
+        }
         Intent result = new Intent();
         myData.setName(myName.getText().toString());
         result.putExtra(PlantInfoActivity.PLANT_DATA, myData);
