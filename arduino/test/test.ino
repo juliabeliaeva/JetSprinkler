@@ -37,14 +37,12 @@ char *bufferPtr;
 
 State state = READY;
 
-long tt = 0;
-
 void loop() {
   if (ttyCmd.available() > 0) {  // is there any input data
     char ch = ttyCmd.read();     // data
     switch (state) {
       case READY:                // expecting command
-        if (ch == '\n')  {       // empty command
+        if (ch == '\n' || ch == '\r')  {       // empty command
           ttyCmd.println("OK");
         } else {
           cmd = ch;
@@ -54,7 +52,7 @@ void loop() {
         }
         break;
       case COMMAND_STARTED:      // buffer command till \n (or buffer overflow)
-        if (ch == '\n') {        // end of data
+        if (ch == '\n' || ch == '\r') {        // end of data
           *bufferPtr = 0;
           // process command
           processCmd();
@@ -66,20 +64,12 @@ void loop() {
         }
         break;
       case BUFFER_OVERFLOW:
-        if (ch == '\n') {
+        if (ch == '\n' || ch == '\r') {
           ttyCmd.println("ERROR: buffer overflow");
           state = READY;
         }
         break;
     }
-    // just for test
-    tt = millis();
-  }
-
-  // just test output for now...
-  if (millis() - tt > 5000) {
-//    test1302();
-    tt = millis();
   }
 }
 
