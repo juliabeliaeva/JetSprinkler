@@ -11,7 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.intellij.jetSprinkler.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
 
@@ -34,7 +39,10 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     TextView text = (TextView) row.findViewById(R.id.ruleText);
 
     final Rule rule = rules.get(position);
-    text.setText(rule.getHour() + ":" + rule.getMinute() + " every " + rule.getInterval() + " " + rule.getUnit().name);
+    Calendar date = new GregorianCalendar();
+    date.set(Calendar.HOUR_OF_DAY, rule.getHour());
+    date.set(Calendar.MINUTE, rule.getMinute());
+    text.setText(new SimpleDateFormat("hh:mm").format(date.getTime()) + " every " + (rule.getInterval() == 1 ? rule.getUnit().name : rule.getInterval() + " " + rule.getUnit().name));
 
     return row;
   }
@@ -113,14 +121,16 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
   }
 
   public static enum UNIT {
-    DAY("daily"),
-    WEEK("weekly"),
-    MONTHS("monthly");
+    DAY("day", "daily"),
+    WEEK("weekly", "weekly"),
+    MONTHS("month", "monthly");
 
-    private final String name;
+    public final String name;
+    public final String adjective;
 
-    UNIT(String name) {
+    UNIT(String name, String adjective) {
       this.name = name;
+      this.adjective = adjective;
     }
   }
 }

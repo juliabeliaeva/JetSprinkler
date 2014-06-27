@@ -31,6 +31,9 @@ public class EditRuleActivity extends Activity {
     final EditText numberPicker = (EditText) findViewById(R.id.intervalText);
     numberPicker.setText("" + rule.getInterval());
 
+    TextView unitText = (TextView) findViewById(R.id.unitText);
+    unitText.setText(rule.getUnit().name());
+
     Button okButton = (Button) findViewById(R.id.saveRuleButton);
     okButton.setOnClickListener(new View.OnClickListener() {
       @Override

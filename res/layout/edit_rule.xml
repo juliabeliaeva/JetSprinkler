@@ -41,13 +41,13 @@
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:ems="10"
-                    android:id="@+id/intervalText" android:layout_gravity="right"/>
+                    android:id="@+id/intervalText"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="day"
                     android:textSize="22dp"
-                    android:id="@+id/unitText" android:layout_gravity="center_horizontal|top"/>
+                    android:id="@+id/unitText"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="horizontal"
