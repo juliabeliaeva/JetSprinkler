@@ -35,8 +35,8 @@ public class EditRuleActivity extends Activity {
 
     Spinner spinner = (Spinner) findViewById(R.id.unitPicker);
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-            R.array.units_array, android.R.layout.simple_spinner_item);
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            R.array.units_array, R.layout.spinner);
+    adapter.setDropDownViewResource(R.layout.spinner_checked);
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
