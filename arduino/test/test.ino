@@ -83,10 +83,12 @@ void loop() {
 void processCmd() {
   switch (cmd) {
     case 'V':
-      ttyCmd.print("OK\n0.1\n");
+      ttyCmd.print("OK\n");
+      sendData("0.1");
       break;
     case 'N':
-      ttyCmd.print("OK\n3\n");
+      ttyCmd.print("OK\n");
+      sendData("3");
       break;
 
     case 'S':
@@ -126,4 +128,14 @@ int getInt(char* &ptr) {  // advance ptr till next nondigit, return int value
     int n = atoi(buffer);
     *ptr = ch;
     return n;
+}
+
+int checksum(const char *p0, const char *p1) {
+  int res = 0;
+  while (p0 < p1)  res += *p0++;
+  return res % 65536;
+}
+
+void sendData(const char *s) {    // adds #<checksum>\n to the end
+  ttyCmd.print(s); ttyCmd.print("#"); ttyCmd.print(checksum(s, s+strlen(s))); ttyCmd.print('\n');
 }
