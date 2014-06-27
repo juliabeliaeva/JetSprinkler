@@ -19,6 +19,8 @@ public class PlantsListActivity extends Activity {
   private final ArrayList<PlantListItem> myPlants = new ArrayList<PlantListItem>();
   public static final int MY_CHILD_ACTIVITY = 666;
 
+  private PlantListAdapter adapter;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -26,7 +28,7 @@ public class PlantsListActivity extends Activity {
 
     readState();
 
-    PlantListAdapter adapter = new PlantListAdapter(this,
+    adapter = new PlantListAdapter(this,
             R.layout.plantlist_item_row, myPlants);
 
     ListView list = ((ListView) findViewById(R.id.listView));
@@ -57,6 +59,7 @@ public class PlantsListActivity extends Activity {
               break;
             }
           }
+          adapter.notifyDataSetChanged();
         }
         break;
       }
@@ -72,12 +75,6 @@ public class PlantsListActivity extends Activity {
   @Override
   protected void onStop() {
     super.onStop();
-    saveState();
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
     saveState();
   }
 

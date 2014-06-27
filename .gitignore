@@ -1,3 +1,5 @@
 out/
 sdk/
 adt-bundle-*/*
+local.properties
+.idea/workspace.xml

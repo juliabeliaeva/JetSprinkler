@@ -14,7 +14,7 @@
         </activity>
         <activity android:name=".plantList.PlantsListActivity"/>
         <activity android:name=".plantPage.PlantInfoActivity"/>
-        <activity android:name=".CreatePlant" android:label="Add a Plant" android:theme="@android:style/Theme.Holo.Dialog"/>
+        <activity android:name=".rules.EditRuleActivity"/>
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
