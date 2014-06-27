@@ -134,18 +134,30 @@ void processCmd() {
       stopWatering();
       ttyCmd.print("OK\n");
       break;
-    case 'Y':
-    case 'Z':
+    case 'X':  // get pin status
+    {
+      char *ptr = buffer;
+      int n = getInt(ptr);
+      ttyCmd.print("OK\n");
+      sprintf(buffer, "Pin %d is %s", n, (digitalRead(n) ? "HIGH" : "LOW"));
+      sendData(buffer);
+      break;
+    }
+    case 'Y':  // set pin
+    case 'Z':  // reset pin
     {
       char *ptr = buffer;
       int n = getInt(ptr);
       digitalWrite(n, cmd=='Y' ? HIGH : LOW);
-      ttyCmd.print("OK\nSet pin "); ttyCmd.print(n); ttyCmd.print(" to "); ttyCmd.println(cmd=='Y' ? "HIGH" : "LOW");
+      ttyCmd.print("OK\n");
+      sprintf(buffer, "Pin %d set to %s", n, (cmd=='Y' ? "HIGH" : "LOW"));
+      sendData(buffer);
       break;
     }
       
     default:
-      ttyCmd.print("ERROR CMD: '"); ttyCmd.print(cmd); ttyCmd.println("'");
+      sprintf(buffer, "ERROR CMD: \'%c\' (%d)\n", cmd, (int)cmd);
+      ttyCmd.print(buffer);
       break;
   }
 }
