@@ -2,9 +2,11 @@
 <resources>
     <string name="app_name">JetSprinkler</string>
     <string-array name="units_array">
-        <item>daily</item>
-        <item>weekly</item>
-        <item>monthly</item>
+        <item>day</item>
+        <item>week</item>
+        <item>month</item>
+        <item>minute</item>
+        <!--I know:(-->
     </string-array>
 
     <style name="normalText" parent="android:Widget.TextView">

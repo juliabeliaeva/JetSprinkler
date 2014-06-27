@@ -41,7 +41,7 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     final Rule rule = rules.get(position);
     Calendar date = new GregorianCalendar();
     date.set(Calendar.HOUR_OF_DAY, rule.getHour());
-    date.set(Calendar.MINUTE, rule.getMinute());
+    date.set(Calendar.MINUTE, 0);
     text.setText(new SimpleDateFormat("HH:mm").format(date.getTime()) + " every " + (rule.getInterval() == 1 ? rule.getUnit().name : rule.getInterval() + " " + rule.getUnit().name + "s"));
 
     return row;
@@ -49,7 +49,6 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
 
   public static class Rule implements Parcelable {
     private Integer hour = 12;
-    private Integer minute = 0;
     private int interval = 1;
     private UNIT unit = UNIT.DAY;
 
@@ -59,14 +58,6 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
 
     public void setHour(Integer hour) {
       this.hour = hour;
-    }
-
-    public Integer getMinute() {
-      return minute;
-    }
-
-    public void setMinute(Integer minute) {
-      this.minute = minute;
     }
 
     public int getInterval() {
@@ -93,7 +84,6 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
       dest.writeInt(hour);
-      dest.writeInt(minute);
       dest.writeInt(interval);
       dest.writeInt(unit.ordinal());
     }
@@ -102,12 +92,10 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
       @Override
       public Rule createFromParcel(Parcel source) {
         int hour = source.readInt();
-        int minute = source.readInt();
         int interval = source.readInt();
         int ordinal = source.readInt();
         Rule rule = new Rule();
         rule.setHour(hour);
-        rule.setMinute(minute);
         rule.setInterval(interval);
         rule.setUnit(UNIT.values()[ordinal]);
         return rule;
@@ -123,7 +111,8 @@ public class RuleListAdapter extends ArrayAdapter<RuleListAdapter.Rule> {
   public static enum UNIT {
     DAY("day", "daily"),
     WEEK("week", "weekly"),
-    MONTHS("month", "monthly");
+    MONTHS("month", "monthly"),
+    MINUTE("minute", "minute"); // ?
 
     public final String name;
     public final String adjective;

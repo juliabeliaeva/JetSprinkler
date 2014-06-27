@@ -26,6 +26,6 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentTop="true"
-            android:id="@+id/listView"
+            android:id="@+id/plantsListView"
             android:layout_above="@id/linear" />
 </RelativeLayout>
