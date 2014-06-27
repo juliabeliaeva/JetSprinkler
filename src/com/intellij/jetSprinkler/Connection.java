@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public class Connection {
   private static Connection ourInstance = new Connection();
+  private ConnectedThread myThread;
 
   public static Connection getInstance() {
     return ourInstance;
@@ -44,7 +45,8 @@ public class Connection {
 
     try {
       myBtSocket.connect();
-      new ConnectedThread(myBtSocket).start();
+      myThread = new ConnectedThread(myBtSocket);
+      myThread.start();
     } catch (IOException e) {
       return false;
     }
@@ -60,6 +62,13 @@ public class Connection {
     }
   }
 
+  public byte[] read() {
+    return myThread.read();
+  }
+
+  public void write(byte[] message) {
+    myThread.write(message);
+  }
 
   private class ConnectedThread extends Thread {
     private final BluetoothSocket mySocket;
@@ -103,10 +112,10 @@ public class Connection {
       }
     }
 
-    public byte[] read(){
-      synchronized (myBuffer){
+    public byte[] read() {
+      synchronized (myBuffer) {
         byte[] res = new byte[myBuffer.size()];
-        for (int i=0;i<myBuffer.size();i++){
+        for (int i = 0; i < myBuffer.size(); i++) {
           res[i] = myBuffer.get(i);
         }
         return res;
