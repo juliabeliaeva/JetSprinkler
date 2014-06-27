@@ -29,6 +29,9 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.Date;
 
 public class PlantInfoActivity extends Activity {
@@ -139,11 +142,31 @@ public class PlantInfoActivity extends Activity {
   }
 
   private Timetable timetableFromRules() {
-    return 123;
+    Timetable tt = new Timetable();
+    for (Rule r:rules){
+      Timetable.TimetableItem ti = new Timetable.TimetableItem();
+      ti.id= (byte) myData.getNumber();
+      ti.period = r.getInterval()*r.getUnit().howManyMinutes();
+
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date(System.currentTimeMillis()));
+      if (cal.get(Calendar.HOUR_OF_DAY)>r.getHour()){
+        cal.set(Calendar.DAY_OF_MONTH,cal.get(Calendar.DAY_OF_MONTH)+1);
+      }
+      cal.set(Calendar.HOUR_OF_DAY,r.getHour());
+      Calendar calStart = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
+      calStart.set(2014,Calendar.JANUARY,1);
+
+      ti.start = ((int) ((cal.getTimeInMillis() - calStart.getTimeInMillis()) / (1000 * 60)));
+      ti.volume = r.getVolume();
+
+      tt.items.add(ti);
+    }
+    return tt;
   }
 
   private void rulesFromTimetable(Timetable timetable) {
-              123
+
   }
 
   private void updateBackground() {
