@@ -139,11 +139,11 @@ public class PlantInfoActivity extends Activity {
   }
 
   private Timetable timetableFromRules() {
-    return null;
+    return 123;
   }
 
   private void rulesFromTimetable(Timetable timetable) {
-
+              123
   }
 
   private void updateBackground() {
