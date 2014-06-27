@@ -14,6 +14,7 @@
         </activity>
         <activity android:name=".plantList.PlantsListActivity"/>
         <activity android:name=".plantPage.PlantInfoActivity"/>
+        <activity android:name=".rules.EditRuleActivity"/>
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />

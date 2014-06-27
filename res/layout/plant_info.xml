@@ -74,25 +74,27 @@
                                 android:orientation="horizontal"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:layout_alignParentBottom="true">
-                            <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Save"
-                                    android:id="@+id/button"/>
-                        </LinearLayout>
-                        <LinearLayout
-                                android:id="@+id/center"
-                                android:orientation="horizontal"
+                                android:text="Save"
+                                android:id="@+id/button"/>
+                    </LinearLayout>
+                    <LinearLayout
+                            android:id="@+id/center"
+                            android:orientation="vertical"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_below="@id/caption"
+                            android:layout_above="@id/floor">
+                        <ListView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_below="@id/caption"
-                                android:layout_above="@id/floor">
-                        </LinearLayout>
-                    </RelativeLayout>
-                </LinearLayout>
+                                android:id="@+id/rulesList" android:layout_gravity="top" android:layout_weight="1"/>
+                        <Button
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Add Rule"
+                                android:id="@+id/addRule" android:layout_gravity="center_horizontal|bottom"/>
+                    </LinearLayout>
+                </RelativeLayout>
                 <LinearLayout
                         android:id="@+id/stat"
                         android:layout_width="match_parent"
