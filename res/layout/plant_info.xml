@@ -49,6 +49,7 @@
                                             android:layout_height="wrap_content"
                                             android:id="@+id/plantName"
                                             android:inputType="text"
+                                            android:imeOptions="actionDone"
                                             android:textStyle="bold"
                                             android:textSize="33dp"
                                             android:hint="Plant Name" android:editable="false" style="@style/editText"

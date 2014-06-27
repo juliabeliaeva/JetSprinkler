@@ -145,6 +145,7 @@ public class PlantInfoActivity extends Activity {
     Intent intent = new Intent(PlantInfoActivity.this, EditRuleActivity.class);
     intent.putExtra(EditRuleActivity.RULE_DATA, rule);
     intent.putExtra(EditRuleActivity.RULE_INDEX_DATA, position);
+    intent.putExtra(EditRuleActivity.EDITOR_HEADER, "Water " + myData.getName());
     startActivityForResult(intent, REQUEST_EDIT_RULE);
   }
 

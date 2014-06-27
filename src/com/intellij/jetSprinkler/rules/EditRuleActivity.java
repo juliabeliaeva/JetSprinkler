@@ -10,6 +10,7 @@ import com.intellij.jetSprinkler.R;
 public class EditRuleActivity extends Activity {
   public static final String RULE_DATA = "RULE_DATA";
   public static final String RULE_INDEX_DATA = "RULE_INDEX_DATA";
+  public static final String EDITOR_HEADER = "EDITOR_HEADER";
   private RuleListAdapter.Rule rule;
   private int ruleIndex;
   @Override
@@ -19,6 +20,8 @@ public class EditRuleActivity extends Activity {
 
     rule = (RuleListAdapter.Rule) getIntent().getExtras().get(RULE_DATA);
     ruleIndex = getIntent().getIntExtra(RULE_INDEX_DATA, -1);
+    final String header = getIntent().getStringExtra(EDITOR_HEADER);
+    setTitle(header);
 
     final NumberPicker timePicker = (NumberPicker) findViewById(R.id.hourPicker);
     timePicker.setMinValue(0);
