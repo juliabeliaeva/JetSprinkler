@@ -59,7 +59,7 @@
                                         android:inputType="text"
                                         android:textStyle="bold"
                                         android:textSize="33dp"
-                                        android:hint="Plant Name"/>
+                                        android:hint="Plant Name" android:editable="false"/>
                                 <TextView
                                         android:layout_width="fill_parent"
                                         android:layout_height="wrap_content"
