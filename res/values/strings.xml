@@ -2,10 +2,10 @@
 <resources>
     <string name="app_name">JetSprinkler</string>
     <string-array name="units_array">
+        <item>minute</item>
         <item>day</item>
         <item>week</item>
         <item>month</item>
-        <item>minute</item>
         <!--I know:(-->
     </string-array>
 
