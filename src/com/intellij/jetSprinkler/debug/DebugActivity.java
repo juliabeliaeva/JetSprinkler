@@ -21,6 +21,13 @@ public class DebugActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.debug);
 
+    final int id = getResources().getIdentifier("android:id/titleDivider", null, null);
+    View divider = findViewById(id);
+    if (divider != null) {
+      divider.setBackgroundColor(getResources().getColor(R.color.transparent_light_color));
+    }
+    setTitleColor(getResources().getColor(R.color.light_color));
+
     String stationName = getIntent().getStringExtra(Sprinkler.STATION_NAME_DATA);
     setTitle(stationName + " - " + getTitle());
 

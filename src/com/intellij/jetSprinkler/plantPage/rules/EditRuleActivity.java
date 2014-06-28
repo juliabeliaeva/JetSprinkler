@@ -18,6 +18,13 @@ public class EditRuleActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.edit_rule);
 
+    final int id = getResources().getIdentifier("android:id/titleDivider", null, null);
+    View divider = findViewById(id);
+    if (divider != null) {
+      divider.setBackgroundColor(getResources().getColor(R.color.transparent_light_color));
+    }
+    setTitleColor(getResources().getColor(R.color.light_color));
+
     rule = (Rule) getIntent().getExtras().get(RULE_DATA);
     ruleIndex = getIntent().getIntExtra(RULE_INDEX_DATA, -1);
     final String header = getIntent().getStringExtra(EDITOR_HEADER);
