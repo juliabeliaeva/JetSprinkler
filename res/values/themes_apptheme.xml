@@ -25,6 +25,8 @@
 
     <item name="android:spinnerItemStyle">@style/SpinnerItemAppTheme</item>
 
+      <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
+
   </style>
 
 </resources>
