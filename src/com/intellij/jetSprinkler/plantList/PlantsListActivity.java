@@ -22,6 +22,7 @@ public class PlantsListActivity extends Activity {
   public static final String IMAGE_URI = "IMAGE_URI_";
   public static final int MY_CHILD_ACTIVITY = 666;
   private final ArrayList<PlantListItem> myPlants = new ArrayList<PlantListItem>();
+  private String stationName;
 
   private PlantListAdapter adapter;
 
@@ -30,7 +31,7 @@ public class PlantsListActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.plants_list);
 
-    final String stationName = getIntent().getStringExtra(Sprinkler.STATION_NAME_DATA);
+    stationName = getIntent().getStringExtra(Sprinkler.STATION_NAME_DATA);
     setTitle(stationName + " - " + getTitle());
 
     int sprinklerCount;
@@ -108,11 +109,11 @@ public class PlantsListActivity extends Activity {
     SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
 
     for (int port = 0; port < sprinklerCount; port++) {
-      String name = sharedPreferences.getString(NAME + port, null);
+      String name = sharedPreferences.getString(NAME + stationName + port, null);
       PlantListItem res;
       if (name != null) {
         // we have info
-        String imageUri = sharedPreferences.getString(IMAGE_URI + port, null);
+        String imageUri = sharedPreferences.getString(IMAGE_URI + stationName + port, null);
         res = new PlantListItem(port);
         res.setName(name);
 
@@ -137,8 +138,8 @@ public class PlantsListActivity extends Activity {
     SharedPreferences.Editor editor = sharedPreferences.edit();
 
     for (PlantListItem plant: myPlants) {
-      editor.putString(NAME + plant.getNumber(), plant.getName());
-      editor.putString(IMAGE_URI + plant.getNumber(), plant.getImageFileUri());
+      editor.putString(NAME + stationName + plant.getNumber(), plant.getName());
+      editor.putString(IMAGE_URI + stationName + plant.getNumber(), plant.getImageFileUri());
     }
 
     editor.commit();

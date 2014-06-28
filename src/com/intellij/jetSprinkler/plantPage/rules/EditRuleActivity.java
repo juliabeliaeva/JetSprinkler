@@ -115,10 +115,10 @@ public class EditRuleActivity extends Activity {
   }
 
   private void updateDuringText(int progress, TextView duringText) {
-    duringText.setText("During " + (progress == 0 ? "2" : "" + progress) + " seconds");
+    duringText.setText("During " + (progress == 0 || progress == 1 ? "1 second" : progress + " seconds"));
   }
 
   private void updateEveryText(int progress, TextView everyText) {
-    everyText.setText("Every " + (progress == 0 ? "" : "" + progress));
+    everyText.setText("Every " + (progress == 0 || progress == 1 ? "" : "" + progress));
   }
 }
