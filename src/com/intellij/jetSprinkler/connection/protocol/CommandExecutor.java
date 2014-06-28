@@ -55,7 +55,7 @@ public class CommandExecutor {
     int length = 0;
     do {
       //todo for "set timetable" command it can take mote than thisCommandExecutor: review
-      wait(100);
+      wait(s.equals("L") ||s.equals("T")?700:100);
       byte[] bytes = Connection.getInstance().read();
       if (bytes.length == 0) break;
 
