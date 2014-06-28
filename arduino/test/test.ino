@@ -3,21 +3,38 @@
 
 const int pinLED = 13;
 const int pinPump = 9;
-int pinValve[] = { 2, 3, 4, 5 };
+const int pinValve[] = { 2, 3, 4, 5 };
 const int pin1302CLK = 6;
 const int pin1302DAT = 7;
 const int pin1302RST = 8;
+
+const int NUMBER_OF_DEVICES = sizeof(pinValve)/sizeof(int);
 
 Stream& ttyCmd = Serial;
 Stream& ttyDebug = Serial;
 
 #define debug(x) ttyDebug.print(x)
 
+struct Rule {
+  byte flags;
+  byte id;
+  unsigned volume;
+  long start;
+  long period;
+};
+
+enum State {
+  READY,
+  COMMAND_STARTED,
+  BUFFER_OVERFLOW
+};
+
+
 void setup() {
   Serial.begin(9600);        // initialize hardware rx/tx
   pinMode(pinLED, OUTPUT);
   pinMode(pinPump, OUTPUT);
-  for (int i=0; i<(sizeof(pinValve)/sizeof(int)); ++i) pinMode(pinValve[i], OUTPUT);
+  for (int i=0; i<NUMBER_OF_DEVICES; ++i) pinMode(pinValve[i], OUTPUT);
   stopWatering();
   setup1302();
   if (!testEEPROMinitialized())  initEEPROM();
@@ -25,15 +42,17 @@ void setup() {
 //  ttyCmd.setTimeout(10000);  // 10 seconds for typing
 }
 
-enum State {
-  READY,
-  COMMAND_STARTED,
-  BUFFER_OVERFLOW
-};
+// input/output staff
 char cmd;
 const int BUFFER_SIZE = 200;
 char buffer[BUFFER_SIZE+1];
 char *bufferPtr;
+
+// watering staff
+const int WATERING_QUEUE_SIZE = 10;
+byte wateringQueue[WATERING_QUEUE_SIZE];
+byte *queueHead = wateringQueue, *queueTail = queueHead;
+long lastCheck = 0;              // last time (in minutes since 2014-01-01) we checked rules for watering
 
 State state = READY;
 
@@ -96,7 +115,8 @@ void processCmd() {
       break;
     case 'N':    // get number of watering devices
       ttyCmd.print("OK\n");
-      sendData("3");
+      sprintf(buffer, "%d", NUMBER_OF_DEVICES);
+      sendData(buffer);
       break;
 
     case 'S':    // S2014-06-26 22:58:00# - set current date & time
@@ -124,17 +144,14 @@ void processCmd() {
     }
     case 'L':    // get timetable
     {
-      int tabsize = EEPROM.read(4);
+      int tabsize = getRuleTableSize();
       ttyCmd.print("OK\n");
       char *ptr = buffer;
       *ptr = 0;
-      for (int i=0, addr=5; i<tabsize; ++i, addr+=12) {
-        int flags = EEPROM.read(addr),
-            id    = EEPROM.read(addr+1),
-            vol   = EEPROM.read(addr+2)<< 8 | EEPROM.read(addr+3);
-        long start= ((long)EEPROM.read(addr+4))<<24 | ((long)EEPROM.read(addr+5))<<16 | ((long)EEPROM.read(addr+ 6))<<8 | EEPROM.read(addr+ 7),
-            period= ((long)EEPROM.read(addr+8))<<24 | ((long)EEPROM.read(addr+9))<<16 | ((long)EEPROM.read(addr+10))<<8 | EEPROM.read(addr+11);
-        sprintf(ptr, "%u:%u:%u:%lu:%lu;", flags, id, vol, start, period);
+      struct Rule rule;
+      for (int i=0; i<tabsize; ++i) {
+        readRule(i, rule);
+        sprintf(ptr, "%u:%u:%u:%lu:%lu;", rule.flags, rule.id, rule.volume, rule.start, rule.period);
         ptr += strlen(ptr);
       }
       sendData(buffer);
@@ -204,7 +221,7 @@ void processCmd() {
 
 void stopWatering() {
   digitalWrite(pinPump, LOW);
-  for (int i=0; i<(sizeof(pinValve)/sizeof(int)); ++i)  digitalWrite(pinValve[i], LOW);
+  for (int i=0; i<NUMBER_OF_DEVICES; ++i)  digitalWrite(pinValve[i], LOW);
 }
 
 int getInt(char* &ptr) {        // advance ptr till next nondigit, return int value
@@ -274,4 +291,55 @@ void initEEPROM() {
 
 boolean testEEPROMinitialized() {
   return EEPROM.read(0)==0x15 && EEPROM.read(1)==0x06 && EEPROM.read(2)==0 && EEPROM.read(3)==1 && EEPROM.read(4)<60;
+}
+
+int getRuleTableSize() {
+  return EEPROM.read(4);
+}
+
+void readRule(int n, struct Rule &rule) {
+  int addr = 5 + n*12;
+  rule.flags  = EEPROM.read(addr);
+  rule.id     = EEPROM.read(addr+1);
+  rule.volume = EEPROM.read(addr+2)<<8 + EEPROM.read(addr+3);
+  rule.start  = ((long)EEPROM.read(addr+4))<<24 | ((long)EEPROM.read(addr+5))<<16 | ((long)EEPROM.read(addr+ 6))<<8 | EEPROM.read(addr+7);
+  rule.period = ((long)EEPROM.read(addr+8))<<24 | ((long)EEPROM.read(addr+9))<<16 | ((long)EEPROM.read(addr+10))<<8 | EEPROM.read(addr+11);
+}
+
+//////////////////////////////////////////
+// Watering
+//
+
+int sizeWatering() {
+  return queueHead <= queueTail ? queueTail - queueHead : WATERING_QUEUE_SIZE - (queueHead-queueTail);
+}
+
+boolean offerWatering(byte b) {
+  if (sizeWatering() >= WATERING_QUEUE_SIZE)  return false;
+  *(queueTail++) = b;
+  if (queueTail >= wateringQueue+WATERING_QUEUE_SIZE)  queueTail = wateringQueue;
+  return true;
+}
+
+byte pollWatering() {  // return 0 if queue is empty
+  if (sizeWatering() == 0)  return 0;
+  byte result = *(queueHead++);
+  if (queueHead >= wateringQueue+WATERING_QUEUE_SIZE)  queueHead = wateringQueue;
+  return result;
+}
+
+long nextTime(long from, long start, long interval) {  // find next number >= from in start+interval*n sequence
+  if (start>from)  return start;
+  return from + interval - (from-start) % interval;
+}
+
+void checkRules(long curTime) {
+  int n = getRuleTableSize();
+  Rule rule;
+  for (int i=0; i<n; ++i) {
+    readRule(i, rule);
+    if (nextTime(lastCheck+1, rule.start, rule.period) <= curTime)
+      offerWatering(i);
+  }
+  lastCheck = curTime;
 }
