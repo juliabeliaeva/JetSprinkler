@@ -46,6 +46,6 @@ public class Protocol {
   }
 
   public static boolean setTimetable(Timetable t) {
-    return CommandExecutor.executeCommand("T", t.save(), true) != null;
+    return CommandExecutor.executeCommand("T", t.save(), false) != null;
   }
 }
