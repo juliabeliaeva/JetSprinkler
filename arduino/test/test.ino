@@ -13,7 +13,8 @@ const int NUMBER_OF_DEVICES = sizeof(pinValve)/sizeof(int);
 Stream& ttyCmd = Serial;
 Stream& ttyDebug = Serial;
 
-#define debug(x) ttyDebug.print(x)
+//#define debug(x) ttyDebug.print(x)
+#define debug(x)
 
 struct Rule {
   byte flags;
@@ -29,19 +30,6 @@ enum State {
   BUFFER_OVERFLOW
 };
 
-
-void setup() {
-  Serial.begin(9600);        // initialize hardware rx/tx
-  pinMode(pinLED, OUTPUT);
-  pinMode(pinPump, OUTPUT);
-  for (int i=0; i<NUMBER_OF_DEVICES; ++i) pinMode(pinValve[i], OUTPUT);
-  stopWatering();
-  setup1302();
-  if (!testEEPROMinitialized())  initEEPROM();
-
-//  ttyCmd.setTimeout(10000);  // 10 seconds for typing
-}
-
 // input/output staff
 char cmd;
 const int BUFFER_SIZE = 200;
@@ -53,8 +41,26 @@ const int WATERING_QUEUE_SIZE = 10;
 byte wateringQueue[WATERING_QUEUE_SIZE];
 byte *queueHead = wateringQueue, *queueTail = queueHead;
 long lastCheck = 0;              // last time (in minutes since 2014-01-01) we checked rules for watering
+int wateringID = -1;             // <0 - no watering now, otherwise - watered device
+long wateringStarted = 0;        // millis() when watering for device wateringID was started
+unsigned int wateringLength;     // current watering length in millis
 
 State state = READY;
+
+
+void setup() {
+  Serial.begin(9600);        // initialize hardware rx/tx
+  pinMode(pinLED, OUTPUT);
+  pinMode(pinPump, OUTPUT);
+  for (int i=0; i<NUMBER_OF_DEVICES; ++i) pinMode(pinValve[i], OUTPUT);
+  stopWatering();
+  setup1302();
+  if (!testEEPROMinitialized())  initEEPROM();
+  
+  lastCheck = getCurrentTime()-2;
+
+//  ttyCmd.setTimeout(10000);  // 10 seconds for typing
+}
 
 void loop() {
   if (ttyCmd.available() > 0) {  // is there any input data
@@ -90,6 +96,35 @@ void loop() {
         break;
     }
   }
+  
+  switch (state) {
+    case READY: {
+      // check rules if minute passed
+      long curTime = getCurrentTime();
+      //debug(" checking curTime against lastCheck: "); debug(curTime); debug(" ? "); debug(lastCheck); debug(" ");
+      if (curTime > lastCheck)
+        checkRules(curTime);
+      // path through to default
+    }
+    default: {
+      if (wateringID < 0) {      // no current watering, check watering queue
+        if (sizeWatering()) {
+          debug(" watering size()="); debug(sizeWatering()); debug(" ");
+          // start watering
+          Rule rule;
+          readRule(pollWatering(), rule);
+          wateringStarted = millis();
+          wateringID = rule.id;
+          wateringLength = rule.volume * 100;    // convert to milliseconds
+          startWatering(wateringID);
+        }
+      } else if (millis() - wateringStarted >= wateringLength) {
+        // stop watering
+        stopWatering(wateringID);
+        wateringID = -1;
+      }
+    }
+  }
 }
 
 void processCmd() {
@@ -119,16 +154,14 @@ void processCmd() {
       sendData(buffer);
       break;
 
-    case 'S':    // S2014-06-26 22:58:00# - set current date & time
-    {
+    case 'S': {   // S2014-06-26 22:58:00# - set current date & time
       char *ptr = buffer;
       int year = getInt(ptr), month = getInt(++ptr), day = getInt(++ptr), hour = getInt(++ptr), minute = getInt(++ptr), second = getInt(++ptr);
       setTime1302(second, minute, hour, 1, day, month, year);
       ttyCmd.print("OK\n");
       break;
     }
-    case 'G':    // get current date & time in format 2014-06-26 22:58:00#
-    {
+    case 'G': {  // get current date & time in format 2014-06-26 22:58:00#
       ds1302_struct rtc;
       getTime1302(rtc);
       sprintf(buffer, "%04d-%02d-%02d %02d:%02d:%02d", \
@@ -142,8 +175,7 @@ void processCmd() {
       sendData(buffer);
       break;
     }
-    case 'L':    // get timetable
-    {
+    case 'L': {  // get timetable
       int tabsize = getRuleTableSize();
       ttyCmd.print("OK\n");
       char *ptr = buffer;
@@ -157,8 +189,7 @@ void processCmd() {
       sendData(buffer);
       break;
     }
-    case 'T':    // set timetable
-    {
+    case 'T': {  // set timetable
       EEPROM.write(4, 0);      // first write 0 as table length, will be fixed at the end of loading (to be reset-safe)
       char *ptr = buffer;
       int cnt = 0;
@@ -191,8 +222,7 @@ void processCmd() {
       stopWatering();
       ttyCmd.print("OK\n");
       break;
-    case 'X':  // get pin status
-    {
+    case 'X': {    // get pin status
       char *ptr = buffer;
       int n = getInt(ptr);
       ttyCmd.print("OK\n");
@@ -200,9 +230,8 @@ void processCmd() {
       sendData(buffer);
       break;
     }
-    case 'Y':  // set pin
-    case 'Z':  // reset pin
-    {
+    case 'Y':     // set pin
+    case 'Z': {   // reset pin
       char *ptr = buffer;
       int n = getInt(ptr);
       digitalWrite(n, cmd=='Y' ? HIGH : LOW);
@@ -247,7 +276,7 @@ void sendData(const char *s) {    // adds #<checksum>\n to the end
   ttyCmd.print(s); ttyCmd.print("#"); ttyCmd.print(checksum(s, s+strlen(s))); ttyCmd.print('\n');
 }
 
-int getCurrentTime() {            // get time from rtc and convert to minutes since 2014-01-01 00:00
+long getCurrentTime() {           // get time from rtc and convert to minutes since 2014-01-01 00:00
   ds1302_struct rtc;              //   return 0 or negative if error
   getTime1302(rtc);
   int year  = bcd2bin( rtc.Year10, rtc.Year) + 2000,
@@ -256,7 +285,7 @@ int getCurrentTime() {            // get time from rtc and convert to minutes si
       hour  = bcd2bin( rtc.h24.Hour10, rtc.h24.Hour),
       minute= bcd2bin( rtc.Minutes10, rtc.Minutes);
   const byte months[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-  int result = 0;
+  long result = 0;
   result += (year - 2014) * 365 + ((year-1)%4 - 2013%4) - ((year-1)%100 - 2013%100) + ((year-1)%400 - 2013%400);
   for (int i=1; i<month; ++i)  result += months[i];                           // days in the current year
   if (month>2 && ((year%4==0) && (year%100!=0) || (year%400==0)))  result++;  // add leap day in the current year (if any)
@@ -301,9 +330,14 @@ void readRule(int n, struct Rule &rule) {
   int addr = 5 + n*12;
   rule.flags  = EEPROM.read(addr);
   rule.id     = EEPROM.read(addr+1);
-  rule.volume = EEPROM.read(addr+2)<<8 + EEPROM.read(addr+3);
+  rule.volume = EEPROM.read(addr+2)<<8 | EEPROM.read(addr+3);
   rule.start  = ((long)EEPROM.read(addr+4))<<24 | ((long)EEPROM.read(addr+5))<<16 | ((long)EEPROM.read(addr+ 6))<<8 | EEPROM.read(addr+7);
   rule.period = ((long)EEPROM.read(addr+8))<<24 | ((long)EEPROM.read(addr+9))<<16 | ((long)EEPROM.read(addr+10))<<8 | EEPROM.read(addr+11);
+}
+
+unsigned getVolume(int n) {
+  int addr = 5 + n*12;
+  return EEPROM.read(addr+2)<<8 + EEPROM.read(addr+3);
 }
 
 //////////////////////////////////////////
@@ -329,8 +363,10 @@ byte pollWatering() {  // return 0 if queue is empty
 }
 
 long nextTime(long from, long start, long interval) {  // find next number >= from in start+interval*n sequence
+  debug("\n nextTime("); debug(from); debug(", "); debug(start); debug(", "); debug(interval); debug(") = "); debug(from + interval - (from-start) % interval); debug("\n");
   if (start>from)  return start;
-  return from + interval - (from-start) % interval;
+  long r = (from - start) % interval;
+  return from + (r ? interval - r : 0);
 }
 
 void checkRules(long curTime) {
@@ -338,8 +374,28 @@ void checkRules(long curTime) {
   Rule rule;
   for (int i=0; i<n; ++i) {
     readRule(i, rule);
-    if (nextTime(lastCheck+1, rule.start, rule.period) <= curTime)
+    debug(" checking rule "); debug(i); debug(", last check: "); debug(lastCheck); debug(" cur time: "); debug(curTime); debug(" nextTime: ");
+    debug(nextTime(lastCheck+1, rule.start, rule.period));
+    if (nextTime(lastCheck+1, rule.start, rule.period) <= curTime) {
+      debug(" offer watering");
       offerWatering(i);
+    }
+    debug("\n");
   }
   lastCheck = curTime;
+  debug(sizeWatering());
 }
+
+void startWatering(int deviceID) {
+  // turn on pump
+  debug("\nStarting watering device="); debug(deviceID); debug("\n");
+  digitalWrite(pinPump, HIGH);
+  // turn on valve
+  digitalWrite(pinValve[deviceID], HIGH);
+}
+
+void stopWatering(int deviceID) {
+  debug("\nStopping watering device="); debug(deviceID); debug("\n");
+  stopWatering();
+}
+
