@@ -57,8 +57,8 @@ public class EditRuleActivity extends Activity {
 
     final TextView duringText = (TextView) findViewById(R.id.duringText);
     final SeekBar durationSeeker = (SeekBar) findViewById(R.id.durationSeeker);
-    durationSeeker.setMax(200);
-    durationSeeker.setProgress(rule.getVolume());
+    durationSeeker.setMax(20);
+    durationSeeker.setProgress(rule.getVolume()/10);
     updateDuringText(rule.getVolume(), duringText);
     durationSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
@@ -103,7 +103,7 @@ public class EditRuleActivity extends Activity {
         final int progress = intervalSeeker.getProgress();
         rule.setInterval(progress == 0 ? 1 : progress);
         int durationProgress = durationSeeker.getProgress();
-        rule.setVolume(progress == 0 ? 2 : durationProgress);
+        rule.setVolume(progress == 0 ? 2 : durationProgress*10);
 
         Intent intent = new Intent();
         intent.putExtra(RULE_DATA, rule);
