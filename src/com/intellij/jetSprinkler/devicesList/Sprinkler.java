@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sprinkler extends Activity {
-  private static final String STATION_NAME_PREFIX = "";
+  private static final String STATION_NAME_PREFIX = "HC";
   private static final int REQUEST_ENABLE_BT = 1;
 
   @Override
