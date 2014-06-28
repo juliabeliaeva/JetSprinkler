@@ -46,7 +46,7 @@ public class Sprinkler extends Activity {
       final List<StationData> devices = new ArrayList<StationData>();
       for (BluetoothDevice dev : myBtAdapter.getBondedDevices()) {
         if (!dev.getName().startsWith(STATION_NAME_PREFIX)) continue;
-        devices.add(new StationData(dev.getName(), dev.getAddress()));
+        devices.add(new StationData(dev.getName()+dev.getAddress().charAt(dev.getAddress().length()-1), dev.getAddress()));
       }
 
       StationDataAdapter adapter = new StationDataAdapter(this,
