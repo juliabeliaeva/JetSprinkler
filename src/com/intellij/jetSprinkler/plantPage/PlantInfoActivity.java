@@ -2,6 +2,7 @@ package com.intellij.jetSprinkler.plantPage;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -222,7 +223,12 @@ public class PlantInfoActivity extends Activity {
     if (bitmap != null) {
       view.setBackground(new BitmapDrawable(bitmap));
     } else {
-      view.setBackground(new ColorDrawable(Color.RED));
+      TypedArray array = getTheme().obtainStyledAttributes(new int[] {
+              android.R.attr.colorBackground,
+      });
+      int backgroundColor = array.getColor(0, 0xFF00FF);
+      array.recycle();
+      view.setBackground(new ColorDrawable(backgroundColor));
     }
   }
 
