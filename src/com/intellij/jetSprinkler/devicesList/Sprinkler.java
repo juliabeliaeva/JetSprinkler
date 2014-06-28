@@ -7,18 +7,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.connection.Connection;
-import com.intellij.jetSprinkler.connection.Protocol;
+import com.intellij.jetSprinkler.connection.protocol.Protocol;
 import com.intellij.jetSprinkler.plantList.PlantsListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Sprinkler extends Activity {
-  private static final String STATION_NAME_PREFIX = "";
+  private static final String STATION_NAME_PREFIX = "HC";
   private static final int REQUEST_ENABLE_BT = 1;
 
   @Override
@@ -57,16 +56,11 @@ public class Sprinkler extends Activity {
     });
 
     list.setAdapter(adapter);
-
-    Button showPlants = (Button) findViewById(R.id.showPlants); // todo this is temporary until we have proper navigation
-    showPlants.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Intent intent = new Intent(Sprinkler.this, PlantsListActivity.class);
-        startActivity(intent);
-      }
-    });
   }
 
-
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    Connection.getInstance().dispose();
+  }
 }

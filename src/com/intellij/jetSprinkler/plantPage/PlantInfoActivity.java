@@ -2,6 +2,7 @@ package com.intellij.jetSprinkler.plantPage;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -11,37 +12,43 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.intellij.jetSprinkler.R;
-import com.intellij.jetSprinkler.connection.Protocol;
+import com.intellij.jetSprinkler.connection.protocol.Protocol;
+import com.intellij.jetSprinkler.connection.protocol.Timetable;
 import com.intellij.jetSprinkler.plantList.PlantListItem;
-import com.intellij.jetSprinkler.rules.EditRuleActivity;
-import com.intellij.jetSprinkler.rules.RuleListAdapter;
-import com.intellij.jetSprinkler.rules.SwipeDismissListViewTouchListener;
-import com.intellij.jetSprinkler.timetable.Rule;
-import com.intellij.jetSprinkler.timetable.Timetable;
+import com.intellij.jetSprinkler.plantPage.rules.EditRuleActivity;
+import com.intellij.jetSprinkler.plantPage.rules.Rule;
+import com.intellij.jetSprinkler.plantPage.rules.RuleListAdapter;
+import com.intellij.jetSprinkler.plantPage.rules.SwipeDismissListViewTouchListener;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class PlantInfoActivity extends Activity {
   private static final int REQUEST_IMAGE_CAPTURE = 1;
   private static final int REQUEST_EDIT_RULE = 2;
   public static final String PLANT_DATA = "plantData";
   private PlantListItem myData;
-  private Timetable myTimetable;
   private EditText myName;
   private TextView myDate;
   private TextView timeTableHeader;
   private String lastImageUri; // And this code is going to be in a public repo. FOREVER. My sadness is infinite.
   private long captureTime;
+  private Timetable loaded;
+
+  private File myFile;
 
   private final ArrayList<Rule> rules = new ArrayList<Rule>();
   private RuleListAdapter rulesListAdapter;
@@ -52,11 +59,14 @@ public class PlantInfoActivity extends Activity {
     setContentView(R.layout.plant_info);
 
     myData = (PlantListItem) getIntent().getExtras().get(PLANT_DATA);
+    Timetable timetable = null;
     try {
-      myTimetable = Protocol.getTimetable();
+      timetable = Protocol.getTimetable();
     } catch (Throwable t) {
-      // so what, it's 2:39, I can do anything
+      Log.e("", "error", t);
     }
+    assert timetable != null;
+    rulesFromTimetable(timetable);
 
     rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
     ListView list = ((ListView) findViewById(R.id.rulesList));
@@ -115,11 +125,12 @@ public class PlantInfoActivity extends Activity {
       @Override
       public void onClick(View v) {
         try {
-          if (!Protocol.setTimetable(myTimetable)) {
+          if (!Protocol.setTimetable(timetableFromRules())) {
             //todo show error
             return;
           }
         } catch (Throwable t) {
+          Log.e("qwe", "qwe", t);
         }
         Intent result = new Intent();
         myData.setName(myName.getText().toString());
@@ -134,8 +145,15 @@ public class PlantInfoActivity extends Activity {
       @Override
       public void onClick(View v) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        try {
+          myFile = createImageFile();
+          takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(myFile));
+        } catch (IOException e) {
+          //fuck it
+        }
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+          startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
       }
     });
@@ -144,6 +162,65 @@ public class PlantInfoActivity extends Activity {
 
     updateBackground();
     updateInfo();
+  }
+
+  private Timetable timetableFromRules() {
+    Timetable tt = new Timetable();
+    for (Timetable.TimetableItem i : loaded.items) {
+      if (i.id != myData.getNumber()) {
+        tt.items.add(i);
+      }
+    }
+    for (Rule r : rules) {
+      Timetable.TimetableItem ti = new Timetable.TimetableItem();
+      ti.id = (byte) myData.getNumber();
+      ti.period = r.getInterval() * r.getUnit().howManyMinutes();
+
+      Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
+      cal.setTime(new Date(System.currentTimeMillis()));
+      if (cal.get(Calendar.HOUR_OF_DAY) > r.getHour()) {
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 1);
+      }
+      cal.set(Calendar.HOUR_OF_DAY, r.getHour());
+
+      ti.start = ((int) ((cal.getTimeInMillis() - getStartCalendar().getTimeInMillis()) / (1000 * 60)));
+      ti.volume = r.getVolume();
+
+      tt.items.add(ti);
+    }
+    return tt;
+  }
+
+  private Calendar getStartCalendar() {
+    Calendar calStart = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
+    calStart.set(2014, Calendar.JANUARY, 1);
+    return calStart;
+  }
+
+  private void rulesFromTimetable(Timetable timetable) {
+    loaded = timetable;
+    for (Timetable.TimetableItem ti : timetable.items) {
+      if (ti.id != myData.getNumber()) continue;
+      Rule r = new Rule();
+
+      Rule.UNIT right = null;
+      for (Rule.UNIT u : Rule.UNIT.values()) {
+        if (ti.period % u.howManyMinutes() == 0) {
+          right = u;
+        }
+      }
+      assert right != null;
+
+      r.setInterval(ti.period / right.howManyMinutes());
+      r.setUnit(right);
+
+      Calendar cal = getStartCalendar();
+      cal.add(Calendar.MINUTE, ti.start);
+
+      r.setHour(cal.get(Calendar.HOUR_OF_DAY));
+      r.setVolume(ti.volume);
+      rules.add(r);
+    }
   }
 
   private void updateBackground() {
@@ -157,43 +234,29 @@ public class PlantInfoActivity extends Activity {
     if (bitmap != null) {
       view.setBackground(new BitmapDrawable(bitmap));
     } else {
-      view.setBackground(new ColorDrawable(Color.RED));
+      TypedArray array = getTheme().obtainStyledAttributes(new int[] {
+              android.R.attr.colorBackground,
+      });
+      int backgroundColor = array.getColor(0, 0xFF00FF);
+      array.recycle();
+      view.setBackground(new ColorDrawable(backgroundColor));
     }
   }
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == REQUEST_IMAGE_CAPTURE) {
-      final Uri imageUri = data.getData();
-      try {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
+      Display display = getWindowManager().getDefaultDisplay();
+      Point size = new Point();
+      display.getSize(size);
 
-        Bitmap toSave = PlantListItem.loadBitmap(size.x, size.y, new PlantListItem.InputStreamBuilder() {
-          @Override
-          public InputStream openStream() throws FileNotFoundException {
-            return getContentResolver().openInputStream(imageUri);
-          }
-        });
+      myData.setImageFileUri(myFile.getAbsolutePath());
 
-        if (toSave != null) {
-          File photoFile = createImageFile();
-          FileOutputStream fOut = new FileOutputStream(photoFile);
-          toSave.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-          fOut.flush();
-          fOut.close();
-          myData.setImageFileUri(photoFile.getAbsolutePath());
-        }
-
-        updateBackground();
-      } catch (IOException ex) {
-        // oh well
-      }
+      updateBackground();
     } else if (requestCode == REQUEST_EDIT_RULE && resultCode == RESULT_OK) {
       Rule rule = (Rule) data.getExtras().get(EditRuleActivity.RULE_DATA);
       int index = data.getIntExtra(EditRuleActivity.RULE_INDEX_DATA, -1);
-      if (index >=0 && index < rules.size()) {
+      if (index >= 0 && index < rules.size()) {
         rules.set(index, rule);
         updateTimetableHeader();
         rulesListAdapter.notifyDataSetChanged();

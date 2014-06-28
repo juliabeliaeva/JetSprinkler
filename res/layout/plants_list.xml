@@ -17,8 +17,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="Water now!"
-                android:id="@+id/waterNow"
+                android:text="Debug"
+                android:id="@+id/debug"
                 style="@style/button"/>
     </RelativeLayout>
 

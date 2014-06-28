@@ -1,4 +1,4 @@
-package com.intellij.jetSprinkler.timetable;
+package com.intellij.jetSprinkler.plantPage.rules;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -14,6 +14,7 @@ public class Rule implements Parcelable {
   private Integer hour = 12;
   private int interval = 1;
   private UNIT unit = UNIT.DAY;
+  private int volume;
 
   public Integer getHour() {
     return hour;
@@ -23,12 +24,20 @@ public class Rule implements Parcelable {
     this.hour = hour;
   }
 
+  public void setVolume(int volume) {
+    this.volume = volume;
+  }
+
   public int getInterval() {
     return interval;
   }
 
   public void setInterval(int interval) {
     this.interval = interval;
+  }
+
+  public int getVolume() {
+    return volume;
   }
 
   public UNIT getUnit() {
@@ -54,7 +63,7 @@ public class Rule implements Parcelable {
       date.set(Calendar.MINUTE, 0);
       datePresentation = new SimpleDateFormat("HH:mm").format(date.getTime()) + " ";
     }
-    return datePresentation + "every " + (getInterval() == 1 ? getUnit().name : getInterval() + " " + getUnit().name + "s");
+    return datePresentation + "every " + (getInterval() == 1 ? getUnit().name : getInterval() + " " + getUnit().name + "s")+"("+volume+"s)";
   }
 
   @Override
@@ -62,6 +71,7 @@ public class Rule implements Parcelable {
     dest.writeInt(hour);
     dest.writeInt(interval);
     dest.writeInt(unit.ordinal());
+    dest.writeInt(volume);
   }
 
   public static final Creator<Rule> CREATOR = new Creator<Rule>() {
@@ -74,6 +84,7 @@ public class Rule implements Parcelable {
       rule.setHour(hour);
       rule.setInterval(interval);
       rule.setUnit(UNIT.values()[ordinal]);
+      rule.setVolume(source.readInt());
       return rule;
     }
 
@@ -83,18 +94,25 @@ public class Rule implements Parcelable {
     }
   };
 
+
   public static enum UNIT {
-    DAY("day", "daily"),
-    WEEK("week", "weekly"),
-    MONTHS("month", "monthly"),
-    MINUTE("minute", "minute"); // ?
+    MINUTE("minute", "minute", 1), // todo remove after presentation
+    DAY("day", "daily", 24*60),
+    WEEK("week", "weekly", 7*24*60),
+    MONTHS("month", "monthly", 30*24*60);
 
     public final String name;
     public final String adjective;
+    private int minutes;
 
-    UNIT(String name, String adjective) {
+    UNIT(String name, String adjective, int minutes) {
       this.name = name;
       this.adjective = adjective;
+      this.minutes = minutes;
+    }
+
+    public int howManyMinutes() {
+      return minutes;
     }
   }
 }
