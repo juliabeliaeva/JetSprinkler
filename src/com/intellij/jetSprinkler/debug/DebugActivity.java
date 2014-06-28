@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.intellij.jetSprinkler.R;
+import com.intellij.jetSprinkler.connection.protocol.CommandExecutor;
 import com.intellij.jetSprinkler.connection.protocol.Protocol;
 import com.intellij.jetSprinkler.devicesList.Sprinkler;
 
@@ -23,24 +25,65 @@ public class DebugActivity extends Activity {
     setTitle(stationName + " - " + getTitle());
 
     tv = (TextView) findViewById(R.id.tvTime);
-    updateDateView();
 
-    Button btn = (Button) findViewById(R.id.btnTime);
+    Button btn = (Button) findViewById(R.id.btnTimeSet);
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Protocol.setTime(new Date(System.currentTimeMillis()));
-        updateDateView();
       }
     });
-  }
 
-  private void updateDateView() {
-    final Date date = Protocol.getDate();
-    if (date != null) {
-      tv.setText("" + date);
-    } else {
-      tv.setText("No date set");
-    }
+    Button btn2 = (Button) findViewById(R.id.btnTimeGet);
+    btn2.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        final Date date = Protocol.getDate();
+        if (date == null) return;
+        tv.setText("" + date);
+      }
+    });
+
+    final EditText et = (EditText) findViewById(R.id.edPort);
+    Button btn3 = (Button) findViewById(R.id.btnPortGet);
+    btn3.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String res = CommandExecutor.executeCommand("X", "" + et.getText().toString(), true);
+        if (res==null) {
+          tv.setText("fail");
+          return;
+        }
+        tv.setText(res);
+      }
+    });
+
+    Button btn4 = (Button) findViewById(R.id.btnPortOn);
+    btn4.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String res = CommandExecutor.executeCommand("Y", "" + et.getText().toString(), true);
+        if (res==null) {
+          tv.setText("fail");
+          return;
+        }
+        tv.setText("ok");
+      }
+    });
+
+    Button btn5 = (Button) findViewById(R.id.btnPortOff);
+    btn5.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String res = CommandExecutor.executeCommand("Z", "" + et.getText().toString(), true);
+        if (res==null) {
+          tv.setText("fail");
+          return;
+        }
+        tv.setText("ok");
+      }
+    });
+
+
   }
 }
