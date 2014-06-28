@@ -48,6 +48,12 @@ int alarmID = -1;
 long alarmStarted = 0;
 unsigned int alarmLength;
 
+// sensors
+long lastwateringValues[NUMBER_OF_DEVICES] = {};
+int moistureValues[NUMBER_OF_DEVICES] = {};
+const int NUMBER_OF_SENSORS = NUMBER_OF_DEVICES * 2;
+
+
 State state = READY;
 
 
@@ -56,6 +62,7 @@ void setup() {
   pinMode(pinLED, OUTPUT);
   pinMode(pinPump, OUTPUT);
   for (int i=0; i<NUMBER_OF_DEVICES; ++i) pinMode(pinValve[i], OUTPUT);
+  for (int i=0; i<NUMBER_OF_DEVICES; ++i) pinMode(A0+i, INPUT);
   stopWatering();
   setup1302();
   if (!testEEPROMinitialized())  initEEPROM();
@@ -104,9 +111,15 @@ void loop() {
     case READY: {
       // check rules if minute passed
       long curTime = getCurrentTime();
-      //debug(" checking curTime against lastCheck: "); debug(curTime); debug(" ? "); debug(lastCheck); debug(" ");
       if (curTime > lastCheck)
         checkRules(curTime);
+
+      // reading sensor values
+      for (int i=0; i<NUMBER_OF_DEVICES; ++i) {
+        //debug(i); debug(" analogRead="); debug(analogRead(i)); debug(" : "); debug(analogRead(i==0 ? A0 : i==1 ? A1 : i==2 ? A2 : i==3 ? A3 : A4)); debug("\n");
+        moistureValues[i] = analogRead(i);
+      }
+
       // path through to default
     }
     default: {
@@ -120,6 +133,7 @@ void loop() {
             wateringStarted = millis();
             wateringID = rule.id;
             wateringLength = rule.volume * 100;    // convert to milliseconds
+            lastwateringValues[wateringID] = getCurrentTime();  // save "sensor" value
             startWatering(wateringID);
           }
           if (rule.flags & 4) {
@@ -207,6 +221,8 @@ void processCmd() {
       break;
     }
     case 'T': {  // set timetable
+      stopWatering();
+      clearWateringQueue();
       EEPROM.write(4, 0);      // first write 0 as table length, will be fixed at the end of loading (to be reset-safe)
       char *ptr = buffer;
       int cnt = 0;
@@ -238,8 +254,16 @@ void processCmd() {
     case 'D': {    // get sensor value
       char *ptr = buffer;
       int sensorID = getInt(ptr);
+      if (sensorID < 0 || sensorID >= NUMBER_OF_SENSORS) {
+        ttyCmd.print("ERROR wrong sensor id\n");
+        break;
+      }
       ttyCmd.print("OK\n");
-      sprintf(buffer, "%d", sensorID);
+      if (sensorID < NUMBER_OF_DEVICES) {
+        sprintf(buffer, "%ld", lastwateringValues[sensorID]);
+      } else if (sensorID < 2 * NUMBER_OF_DEVICES) {
+        sprintf(buffer, "%d", moistureValues[sensorID-NUMBER_OF_DEVICES]);
+      }
       sendData(buffer);
       break;
     }
@@ -369,6 +393,10 @@ unsigned getVolume(int n) {
 //////////////////////////////////////////
 // Watering
 //
+
+void clearWateringQueue() {
+  queueHead = queueTail = wateringQueue;
+}
 
 int sizeWatering() {
   return queueHead <= queueTail ? queueTail - queueHead : WATERING_QUEUE_SIZE - (queueHead-queueTail);
