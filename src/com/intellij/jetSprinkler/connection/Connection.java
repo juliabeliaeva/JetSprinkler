@@ -57,17 +57,9 @@ public class Connection {
   }
 
   public void dispose() {
-    try {
-      if (myThread != null) {
-        myThread.interrupt();
-        myThread = null;
-      }
-      if (myBtSocket != null) {
-        myBtSocket.close();
-        myBtSocket = null;
-      }
-    } catch (IOException e) {
-
+    if (myThread != null) {
+      myThread.interrupt();
+      myThread = null;
     }
   }
 
@@ -116,6 +108,16 @@ public class Connection {
         } catch (IOException e) {
           break;
         }
+      }
+
+      try {
+        if (myBtSocket != null) {
+
+          myBtSocket.close();
+          myBtSocket = null;
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     }
 
