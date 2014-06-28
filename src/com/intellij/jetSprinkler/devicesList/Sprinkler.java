@@ -69,7 +69,7 @@ public class Sprinkler extends Activity {
 
     list.setAdapter(adapter);
 
-    Button testButton = (Button) findViewById(R.id.testButton);
+    /*Button testButton = (Button) findViewById(R.id.testButton);
     testButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -80,7 +80,7 @@ public class Sprinkler extends Activity {
         intent.putExtra(EditRuleActivity.EDITOR_HEADER, "Water plant");
         startActivityForResult(intent, 1);
       }
-    });
+    });*/
   }
 
   @Override
