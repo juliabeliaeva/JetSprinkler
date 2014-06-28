@@ -103,7 +103,7 @@ public class EditRuleActivity extends Activity {
         final int progress = intervalSeeker.getProgress();
         rule.setInterval(progress == 0 ? 1 : progress);
         int durationProgress = durationSeeker.getProgress();
-        rule.setVolume(progress == 0 ? 2 : durationProgress*10);
+        rule.setVolume(progress == 0 ? 1 : durationProgress*10);
 
         Intent intent = new Intent();
         intent.putExtra(RULE_DATA, rule);
