@@ -16,7 +16,7 @@
         <activity android:name=".plantList.PlantsListActivity" android:theme="@style/CustomTheme"/>
         <activity android:name=".plantPage.PlantInfoActivity" android:windowSoftInputMode="stateHidden" android:theme="@style/CustomTheme"/>
         <activity android:name=".plantPage.rules.EditRuleActivity" android:label="Edit rule" android:theme="@style/CustomDialogTheme" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".debug.DebugActivity"/>
+        <activity android:name=".debug.DebugActivity" android:theme="@style/CustomDialogTheme"/>
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
-
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:rowCount="1" android:columnCount="2">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="time"
+            android:id="@+id/tvTime" android:layout_gravity="center_vertical" style="@style/normalText"
+            />
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="set time"
-            android:id="@+id/btnTime" android:layout_gravity="left|top" style="@style/button"/>
-    <TextView
-            android:layout_width="123dp"
-            android:layout_height="102dp"
-            android:text="time"
-            android:id="@+id/tvTime" android:layout_gravity="center_horizontal|top" style="@style/normalText"/>
-</FrameLayout>
+            android:id="@+id/btnTime" android:layout_gravity="center_vertical|right" style="@style/button"/>
+</GridLayout>
