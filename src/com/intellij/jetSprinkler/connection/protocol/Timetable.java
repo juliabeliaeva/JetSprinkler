@@ -15,6 +15,7 @@ public class Timetable {
 
   public void load(String res) {
     items.clear();
+    if (res.equals("")) return;
     for (String s:res.split(";")){
       TimetableItem ti = new TimetableItem();
       ti.load(s);
@@ -35,10 +36,10 @@ public class Timetable {
     public void load(String res) {
       String[] params = res.split(":");
       if (params.length!=5) throw new IllegalArgumentException(res);
+      id = Byte.parseByte(params[0]);
       volume = Integer.parseInt(params[1]);
-      start = Integer.parseInt(params[1]);
-      period = Integer.parseInt(params[1]);
-      id = Byte.parseByte(params[1]);
+      start = Integer.parseInt(params[2]);
+      period = Integer.parseInt(params[3]);
     }
   }
 }
