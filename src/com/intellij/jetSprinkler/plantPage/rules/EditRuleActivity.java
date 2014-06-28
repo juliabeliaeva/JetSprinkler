@@ -35,6 +35,37 @@ public class EditRuleActivity extends Activity {
     timePicker.setMaxValue(23);
     timePicker.setValue(rule.getHour());
 
+    final Spinner spinner = (Spinner) findViewById(R.id.unitPicker);
+
+    final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+            R.array.units_array, R.layout.spinner);
+    adapter.setDropDownViewResource(R.layout.spinner_checked);
+
+    final ArrayAdapter<CharSequence> multipleAdapter = ArrayAdapter.createFromResource(this,
+            R.array.multiple_units_array, R.layout.spinner);
+    multipleAdapter.setDropDownViewResource(R.layout.spinner_checked);
+
+    if (rule.getInterval() == 1) {
+      spinner.setAdapter(adapter);
+    } else {
+      spinner.setAdapter(multipleAdapter);
+    }
+
+    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        final Rule.UNIT[] values = Rule.UNIT.values();
+        if (position >= 0 && position < values.length) {
+          rule.setUnit(values[position]);
+        }
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+      }
+    });
+    spinner.setSelection(rule.getUnit().ordinal());
+
     final TextView everyText = (TextView) findViewById(R.id.everyText);
     final SeekBar intervalSeeker = (SeekBar) findViewById(R.id.intervalSeeker);
     intervalSeeker.setMax(20);
@@ -44,6 +75,14 @@ public class EditRuleActivity extends Activity {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         updateEveryText(progress, everyText);
+
+        int pos = spinner.getSelectedItemPosition();
+        if (progress <= 1) {
+          spinner.setAdapter(adapter);
+        } else {
+          spinner.setAdapter(multipleAdapter);
+        }
+        spinner.setSelection(pos);
       }
 
       @Override
@@ -74,26 +113,6 @@ public class EditRuleActivity extends Activity {
       public void onStopTrackingTouch(SeekBar seekBar) {
       }
     });
-
-    Spinner spinner = (Spinner) findViewById(R.id.unitPicker);
-    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-            R.array.units_array, R.layout.spinner);
-    adapter.setDropDownViewResource(R.layout.spinner_checked);
-    spinner.setAdapter(adapter);
-    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        final Rule.UNIT[] values = Rule.UNIT.values();
-        if (position >= 0 && position < values.length) {
-          rule.setUnit(values[position]);
-        }
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-      }
-    });
-    spinner.setSelection(rule.getUnit().ordinal());
 
     Button okButton = (Button) findViewById(R.id.saveRuleButton);
     okButton.setOnClickListener(new View.OnClickListener() {
