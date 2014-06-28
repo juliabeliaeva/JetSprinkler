@@ -68,5 +68,9 @@ public class Sprinkler extends Activity {
     });
   }
 
-
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    Connection.getInstance().dispose();
+  }
 }
