@@ -374,6 +374,7 @@ void checkRules(long curTime) {
   Rule rule;
   for (int i=0; i<n; ++i) {
     readRule(i, rule);
+    if (!(rule.flags & 1))  continue;  // disabled rule
     debug(" checking rule "); debug(i); debug(", last check: "); debug(lastCheck); debug(" cur time: "); debug(curTime); debug(" nextTime: ");
     debug(nextTime(lastCheck+1, rule.start, rule.period));
     if (nextTime(lastCheck+1, rule.start, rule.period) <= curTime) {
