@@ -64,9 +64,11 @@ public class PlantInfoActivity extends Activity {
       timetable = Protocol.getTimetable();
     } catch (Throwable t) {
       Log.e("", "error", t);
+      Toast.makeText(getApplicationContext(), "Unable to load timetable", Toast.LENGTH_SHORT).show();
     }
-    assert timetable != null;
-    rulesFromTimetable(timetable);
+    if(timetable != null) {
+      rulesFromTimetable(timetable);
+    }
 
     rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
     ListView list = ((ListView) findViewById(R.id.rulesList));
@@ -131,6 +133,7 @@ public class PlantInfoActivity extends Activity {
           }
         } catch (Throwable t) {
           Log.e("qwe", "qwe", t);
+          Toast.makeText(getApplicationContext(), "Unable to save timetable", Toast.LENGTH_SHORT).show();
         }
         Intent result = new Intent();
         myData.setName(myName.getText().toString());
@@ -234,7 +237,7 @@ public class PlantInfoActivity extends Activity {
     if (bitmap != null) {
       view.setBackground(new BitmapDrawable(bitmap));
     } else {
-      TypedArray array = getTheme().obtainStyledAttributes(new int[] {
+      TypedArray array = getTheme().obtainStyledAttributes(new int[]{
               android.R.attr.colorBackground,
       });
       int backgroundColor = array.getColor(0, 0xFF00FF);

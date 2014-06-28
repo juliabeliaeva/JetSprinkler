@@ -12,6 +12,8 @@ import com.intellij.jetSprinkler.devicesList.Sprinkler;
 import java.util.Date;
 
 public class DebugActivity extends Activity {
+  private TextView tv;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -20,15 +22,25 @@ public class DebugActivity extends Activity {
     String stationName = getIntent().getStringExtra(Sprinkler.STATION_NAME_DATA);
     setTitle(stationName + " - " + getTitle());
 
-    final TextView tv = (TextView) findViewById(R.id.tvTime);
+    tv = (TextView) findViewById(R.id.tvTime);
+    updateDateView();
+
     Button btn = (Button) findViewById(R.id.btnTime);
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Protocol.setTime(new Date(System.currentTimeMillis()));
-        tv.setText("" + Protocol.getDate());
+        updateDateView();
       }
     });
+  }
 
+  private void updateDateView() {
+    final Date date = Protocol.getDate();
+    if (date != null) {
+      tv.setText("" + date);
+    } else {
+      tv.setText("No date set");
+    }
   }
 }
