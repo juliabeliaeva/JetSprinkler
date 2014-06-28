@@ -12,6 +12,6 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="set time"
+            android:text="Set"
             android:id="@+id/btnTime" android:layout_gravity="center_vertical|right" style="@style/button"/>
 </GridLayout>

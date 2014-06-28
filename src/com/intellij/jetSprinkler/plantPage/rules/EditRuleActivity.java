@@ -33,6 +33,11 @@ public class EditRuleActivity extends Activity {
     intervalPicker.setMaxValue(20);
     intervalPicker.setValue(rule.getInterval());
 
+    final NumberPicker durationPicker = (NumberPicker) findViewById(R.id.durationPicker);
+    durationPicker.setMinValue(1);
+    durationPicker.setMaxValue(100);
+    durationPicker.setValue(rule.getVolume());
+
     Spinner spinner = (Spinner) findViewById(R.id.unitPicker);
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
             R.array.units_array, R.layout.spinner);
@@ -59,6 +64,7 @@ public class EditRuleActivity extends Activity {
       public void onClick(View v) {
         rule.setHour(timePicker.getValue());
         rule.setInterval(intervalPicker.getValue());
+        rule.setVolume(durationPicker.getValue());
 
         Intent intent = new Intent();
         intent.putExtra(RULE_DATA, rule);

@@ -5,33 +5,49 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent" android:gravity="center_vertical|center_horizontal">
     <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="every"
-                  android:id="@+id/everyText" style="@style/normalText" android:layout_gravity="center_vertical"
+                  android:id="@+id/everyText" style="@style/normalText" android:layout_gravity="center_horizontal"
                   android:layout_marginLeft="13dp"/>
         <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/intervalPicker"/>
+                android:id="@+id/intervalPicker" android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"/>
         <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:id="@+id/unitPicker" android:layout_weight="1" android:spinnerMode="dropdown"
                  style="@style/spinner"
-                 android:layout_gravity="center_vertical" android:clickable="true"/>
+                 android:layout_gravity="center_horizontal" android:clickable="true"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="at"
-                  style="@style/normalText" android:id="@+id/atText" android:layout_gravity="center_vertical"/>
+                  style="@style/normalText" android:id="@+id/atText" android:layout_gravity="center_horizontal"/>
         <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/hourPicker"/>
+                android:id="@+id/hourPicker" android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="hours"
-                android:id="@+id/hoursText" android:layout_gravity="center_vertical" style="@style/normalText"
-                android:layout_marginRight="13dp"/>
+                android:id="@+id/hoursText" android:layout_gravity="center_horizontal" style="@style/normalText"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="during"
+                android:id="@+id/during" android:layout_gravity="center_horizontal" style="@style/normalText"/>
+        <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/durationPicker" android:layout_gravity="center" android:orientation="horizontal"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="seconds"
+                android:id="@+id/seconds" android:layout_gravity="center_horizontal" style="@style/normalText"/>
     </LinearLayout>
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OK"
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="OK"
             android:id="@+id/saveRuleButton" android:layout_gravity="center_horizontal|bottom" style="@style/button"/>
 </LinearLayout>
