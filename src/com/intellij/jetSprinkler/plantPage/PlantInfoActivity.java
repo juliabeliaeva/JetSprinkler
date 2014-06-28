@@ -27,7 +27,8 @@ import com.intellij.jetSprinkler.plantPage.rules.Rule;
 import com.intellij.jetSprinkler.plantPage.rules.RuleListAdapter;
 import com.intellij.jetSprinkler.plantPage.rules.SwipeDismissListViewTouchListener;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public class PlantInfoActivity extends Activity {
   private long captureTime;
   private Timetable loaded;
 
+  private File myFile;
+
   private final ArrayList<Rule> rules = new ArrayList<Rule>();
   private RuleListAdapter rulesListAdapter;
 
@@ -56,13 +59,13 @@ public class PlantInfoActivity extends Activity {
     setContentView(R.layout.plant_info);
 
     myData = (PlantListItem) getIntent().getExtras().get(PLANT_DATA);
-    Timetable timetable=null;
+    Timetable timetable = null;
     try {
       timetable = Protocol.getTimetable();
-    }catch (Throwable t){
-      Log.e("","error",t);
+    } catch (Throwable t) {
+      Log.e("", "error", t);
     }
-    assert timetable!=null;
+    assert timetable != null;
     rulesFromTimetable(timetable);
 
     rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
@@ -121,12 +124,13 @@ public class PlantInfoActivity extends Activity {
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        try{
-        if (!Protocol.setTimetable(timetableFromRules())){
-          //todo show error
-          return;
-        }   }catch (Throwable t){
-          Log.e("qwe","qwe",t);
+        try {
+          if (!Protocol.setTimetable(timetableFromRules())) {
+            //todo show error
+            return;
+          }
+        } catch (Throwable t) {
+          Log.e("qwe", "qwe", t);
         }
         Intent result = new Intent();
         myData.setName(myName.getText().toString());
@@ -141,8 +145,15 @@ public class PlantInfoActivity extends Activity {
       @Override
       public void onClick(View v) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        try {
+          myFile = createImageFile();
+          takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(myFile));
+        } catch (IOException e) {
+          //fuck it
+        }
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+          startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
       }
     });
@@ -155,22 +166,22 @@ public class PlantInfoActivity extends Activity {
 
   private Timetable timetableFromRules() {
     Timetable tt = new Timetable();
-    for (Timetable.TimetableItem i:loaded.items){
-      if (i.id!=myData.getNumber()){
+    for (Timetable.TimetableItem i : loaded.items) {
+      if (i.id != myData.getNumber()) {
         tt.items.add(i);
       }
     }
-    for (Rule r:rules){
+    for (Rule r : rules) {
       Timetable.TimetableItem ti = new Timetable.TimetableItem();
-      ti.id= (byte) myData.getNumber();
-      ti.period = r.getInterval()*r.getUnit().howManyMinutes();
+      ti.id = (byte) myData.getNumber();
+      ti.period = r.getInterval() * r.getUnit().howManyMinutes();
 
-      Calendar cal = Calendar.getInstance();
+      Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
       cal.setTime(new Date(System.currentTimeMillis()));
-      if (cal.get(Calendar.HOUR_OF_DAY)>r.getHour()){
-        cal.set(Calendar.DAY_OF_MONTH,cal.get(Calendar.DAY_OF_MONTH)+1);
+      if (cal.get(Calendar.HOUR_OF_DAY) > r.getHour()) {
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 1);
       }
-      cal.set(Calendar.HOUR_OF_DAY,r.getHour());
+      cal.set(Calendar.HOUR_OF_DAY, r.getHour());
 
       ti.start = ((int) ((cal.getTimeInMillis() - getStartCalendar().getTimeInMillis()) / (1000 * 60)));
       ti.volume = r.getVolume();
@@ -182,25 +193,25 @@ public class PlantInfoActivity extends Activity {
 
   private Calendar getStartCalendar() {
     Calendar calStart = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
-    calStart.set(2014,Calendar.JANUARY,1);
+    calStart.set(2014, Calendar.JANUARY, 1);
     return calStart;
   }
 
   private void rulesFromTimetable(Timetable timetable) {
-    loaded=timetable;
-    for (Timetable.TimetableItem ti:timetable.items){
-      if(ti.id!=myData.getNumber()) continue;
+    loaded = timetable;
+    for (Timetable.TimetableItem ti : timetable.items) {
+      if (ti.id != myData.getNumber()) continue;
       Rule r = new Rule();
 
-      Rule.UNIT right=null;
-      for (Rule.UNIT u:Rule.UNIT.values()){
-        if (ti.period%u.howManyMinutes()==0){
+      Rule.UNIT right = null;
+      for (Rule.UNIT u : Rule.UNIT.values()) {
+        if (ti.period % u.howManyMinutes() == 0) {
           right = u;
         }
       }
-      assert right!=null;
+      assert right != null;
 
-      r.setInterval(ti.period/right.howManyMinutes());
+      r.setInterval(ti.period / right.howManyMinutes());
       r.setUnit(right);
 
       Calendar cal = getStartCalendar();
@@ -235,36 +246,17 @@ public class PlantInfoActivity extends Activity {
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == REQUEST_IMAGE_CAPTURE) {
-      final Uri imageUri = data.getData();
-      try {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
+      Display display = getWindowManager().getDefaultDisplay();
+      Point size = new Point();
+      display.getSize(size);
 
-        Bitmap toSave = PlantListItem.loadBitmap(size.x, size.y, new PlantListItem.InputStreamBuilder() {
-          @Override
-          public InputStream openStream() throws FileNotFoundException {
-            return getContentResolver().openInputStream(imageUri);
-          }
-        });
+      myData.setImageFileUri(myFile.getAbsolutePath());
 
-        if (toSave != null) {
-          File photoFile = createImageFile();
-          FileOutputStream fOut = new FileOutputStream(photoFile);
-          toSave.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-          fOut.flush();
-          fOut.close();
-          myData.setImageFileUri(photoFile.getAbsolutePath());
-        }
-
-        updateBackground();
-      } catch (IOException ex) {
-        // oh well
-      }
+      updateBackground();
     } else if (requestCode == REQUEST_EDIT_RULE && resultCode == RESULT_OK) {
       Rule rule = (Rule) data.getExtras().get(EditRuleActivity.RULE_DATA);
       int index = data.getIntExtra(EditRuleActivity.RULE_INDEX_DATA, -1);
-      if (index >=0 && index < rules.size()) {
+      if (index >= 0 && index < rules.size()) {
         rules.set(index, rule);
         updateTimetableHeader();
         rulesListAdapter.notifyDataSetChanged();
