@@ -283,9 +283,9 @@ public class PlantInfoActivity extends Activity {
 
   private void updateTimetableHeader() {
     if (rules.isEmpty()) {
-      timeTableHeader.setText("No Rules");
+      timeTableHeader.setText("No schedule");
     } else {
-      timeTableHeader.setText("Rules " + myData.getName());
+      timeTableHeader.setText("Schedule");
     }
   }
 
