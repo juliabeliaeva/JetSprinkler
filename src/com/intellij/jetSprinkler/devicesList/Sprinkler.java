@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.connection.Connection;
 import com.intellij.jetSprinkler.connection.protocol.Protocol;
 import com.intellij.jetSprinkler.plantList.PlantsListActivity;
+import com.intellij.jetSprinkler.plantPage.rules.EditRuleActivity;
+import com.intellij.jetSprinkler.plantPage.rules.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +68,19 @@ public class Sprinkler extends Activity {
     });
 
     list.setAdapter(adapter);
+
+    Button testButton = (Button) findViewById(R.id.testButton);
+    testButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Rule rule = new Rule();
+        Intent intent = new Intent(Sprinkler.this, EditRuleActivity.class);
+        intent.putExtra(EditRuleActivity.RULE_DATA, rule);
+        intent.putExtra(EditRuleActivity.RULE_INDEX_DATA, 1);
+        intent.putExtra(EditRuleActivity.EDITOR_HEADER, "Water plant");
+        startActivityForResult(intent, 1);
+      }
+    });
   }
 
   @Override

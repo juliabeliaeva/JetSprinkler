@@ -6,22 +6,28 @@
               android:layout_height="match_parent" android:gravity="center_vertical|center_horizontal">
     <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="every"
                   android:id="@+id/everyText" style="@style/normalText" android:layout_gravity="center_vertical"
                   android:layout_marginLeft="13dp"/>
-        <NumberPicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/intervalPicker" android:orientation="vertical"
-                android:layout_gravity="center_horizontal"/>
         <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:id="@+id/unitPicker" android:layout_weight="1" android:spinnerMode="dropdown"
                  style="@style/spinner"
                  android:layout_gravity="center_vertical" android:clickable="true"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="at"
-                  style="@style/normalText" android:id="@+id/atText" android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/intervalSeeker" android:layout_weight="1" style="@style/SeekBarAppTheme"
+            android:max="20"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="left">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Start at"
+                  style="@style/normalText" android:id="@+id/atText" android:layout_gravity="center_vertical"
+                  android:layout_marginLeft="13dp"/>
         <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,25 +40,15 @@
                 android:id="@+id/hoursText" android:layout_gravity="center_vertical" style="@style/normalText"
                 />
     </LinearLayout>
-    <LinearLayout
-            android:orientation="horizontal"
+    <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="during"
-                android:id="@+id/during" android:layout_gravity="center_vertical" style="@style/normalText"/>
-        <NumberPicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/durationPicker" android:layout_gravity="center_vertical" android:orientation="vertical"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="seconds"
-                android:id="@+id/seconds" android:layout_gravity="center_vertical" style="@style/normalText"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="during"
+            android:id="@+id/duringText" style="@style/normalText" android:layout_gravity="left"
+            android:layout_marginLeft="13dp"/>
+    <SeekBar style="@style/SeekBarAppTheme" android:layout_width="match_parent" android:layout_height="wrap_content"
+             android:id="@+id/durationSeeker" android:layout_weight="1" android:max="100" android:indeterminate="false"
+            />
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OK"
             android:id="@+id/saveRuleButton" android:layout_gravity="center_horizontal|bottom" style="@style/button"/>
 </LinearLayout>

@@ -28,15 +28,45 @@ public class EditRuleActivity extends Activity {
     timePicker.setMaxValue(23);
     timePicker.setValue(rule.getHour());
 
-    final NumberPicker intervalPicker = (NumberPicker) findViewById(R.id.intervalPicker);
-    intervalPicker.setMinValue(1);
-    intervalPicker.setMaxValue(20);
-    intervalPicker.setValue(rule.getInterval());
+    final TextView everyText = (TextView) findViewById(R.id.everyText);
+    final SeekBar intervalSeeker = (SeekBar) findViewById(R.id.intervalSeeker);
+    intervalSeeker.setMax(20);
+    intervalSeeker.setProgress(rule.getInterval());
+    updateEveryText(rule.getInterval(), everyText);
+    intervalSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      @Override
+      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        updateEveryText(progress, everyText);
+      }
 
-    final NumberPicker durationPicker = (NumberPicker) findViewById(R.id.durationPicker);
-    durationPicker.setMinValue(1);
-    durationPicker.setMaxValue(100);
-    durationPicker.setValue(rule.getVolume());
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) {
+      }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) {
+      }
+    });
+
+    final TextView duringText = (TextView) findViewById(R.id.duringText);
+    final SeekBar durationSeeker = (SeekBar) findViewById(R.id.durationSeeker);
+    durationSeeker.setMax(200);
+    durationSeeker.setProgress(rule.getVolume());
+    updateDuringText(rule.getVolume(), duringText);
+    durationSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      @Override
+      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        updateDuringText(progress, duringText);
+      }
+
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) {
+      }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) {
+      }
+    });
 
     Spinner spinner = (Spinner) findViewById(R.id.unitPicker);
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -63,8 +93,10 @@ public class EditRuleActivity extends Activity {
       @Override
       public void onClick(View v) {
         rule.setHour(timePicker.getValue());
-        rule.setInterval(intervalPicker.getValue());
-        rule.setVolume(durationPicker.getValue());
+        final int progress = intervalSeeker.getProgress();
+        rule.setInterval(progress == 0 ? 1 : progress);
+        int durationProgress = durationSeeker.getProgress();
+        rule.setVolume(progress == 0 ? 2 : durationProgress);
 
         Intent intent = new Intent();
         intent.putExtra(RULE_DATA, rule);
@@ -73,5 +105,13 @@ public class EditRuleActivity extends Activity {
         finish();
       }
     });
+  }
+
+  private void updateDuringText(int progress, TextView duringText) {
+    duringText.setText("During " + (progress == 0 ? "2" : "" + progress) + " seconds");
+  }
+
+  private void updateEveryText(int progress, TextView everyText) {
+    everyText.setText("Every " + (progress == 0 ? "" : "" + progress));
   }
 }

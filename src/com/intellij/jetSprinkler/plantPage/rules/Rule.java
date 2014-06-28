@@ -14,7 +14,7 @@ public class Rule implements Parcelable {
   private Integer hour = 12;
   private int interval = 1;
   private UNIT unit = UNIT.DAY;
-  private int volume;
+  private int volume = 50;
 
   public Integer getHour() {
     return hour;
