@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,12 +19,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.connection.protocol.Protocol;
+import com.intellij.jetSprinkler.connection.protocol.Timetable;
 import com.intellij.jetSprinkler.plantList.PlantListItem;
 import com.intellij.jetSprinkler.plantPage.rules.EditRuleActivity;
+import com.intellij.jetSprinkler.plantPage.rules.Rule;
 import com.intellij.jetSprinkler.plantPage.rules.RuleListAdapter;
 import com.intellij.jetSprinkler.plantPage.rules.SwipeDismissListViewTouchListener;
-import com.intellij.jetSprinkler.plantPage.rules.Rule;
-import com.intellij.jetSprinkler.connection.protocol.Timetable;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.Date;
 
 public class PlantInfoActivity extends Activity {
   private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -44,6 +44,7 @@ public class PlantInfoActivity extends Activity {
   private TextView timeTableHeader;
   private String lastImageUri; // And this code is going to be in a public repo. FOREVER. My sadness is infinite.
   private long captureTime;
+  private Timetable loaded;
 
   private final ArrayList<Rule> rules = new ArrayList<Rule>();
   private RuleListAdapter rulesListAdapter;
@@ -54,7 +55,14 @@ public class PlantInfoActivity extends Activity {
     setContentView(R.layout.plant_info);
 
     myData = (PlantListItem) getIntent().getExtras().get(PLANT_DATA);
-    rulesFromTimetable(Protocol.getTimetable());
+    Timetable timetable=null;
+    try {
+      timetable = Protocol.getTimetable();
+    }catch (Throwable t){
+      Log.e("","error",t);
+    }
+    assert timetable!=null;
+    rulesFromTimetable(timetable);
 
     rulesListAdapter = new RuleListAdapter(this, R.layout.rule_row, rules);
     ListView list = ((ListView) findViewById(R.id.rulesList));
@@ -112,9 +120,12 @@ public class PlantInfoActivity extends Activity {
     btn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        try{
         if (!Protocol.setTimetable(timetableFromRules())){
           //todo show error
           return;
+        }   }catch (Throwable t){
+          Log.e("qwe","qwe",t);
         }
         Intent result = new Intent();
         myData.setName(myName.getText().toString());
@@ -143,6 +154,11 @@ public class PlantInfoActivity extends Activity {
 
   private Timetable timetableFromRules() {
     Timetable tt = new Timetable();
+    for (Timetable.TimetableItem i:loaded.items){
+      if (i.id!=myData.getNumber()){
+        tt.items.add(i);
+      }
+    }
     for (Rule r:rules){
       Timetable.TimetableItem ti = new Timetable.TimetableItem();
       ti.id= (byte) myData.getNumber();
@@ -170,7 +186,9 @@ public class PlantInfoActivity extends Activity {
   }
 
   private void rulesFromTimetable(Timetable timetable) {
+    loaded=timetable;
     for (Timetable.TimetableItem ti:timetable.items){
+      if(ti.id!=myData.getNumber()) continue;
       Rule r = new Rule();
 
       Rule.UNIT right=null;
