@@ -235,6 +235,15 @@ void processCmd() {
       break;
     }
 
+    case 'D': {    // get sensor value
+      char *ptr = buffer;
+      int sensorID = getInt(ptr);
+      ttyCmd.print("OK\n");
+      sprintf(buffer, "%d", sensorID);
+      sendData(buffer);
+      break;
+    }
+
     case 'P':
       stopWatering();
       ttyCmd.print("OK\n");
