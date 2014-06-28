@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">JetSprinkler</string>
+    <string name="app_name">Jet Sprinkler</string>
     <string-array name="units_array">
         <item>minute</item>
         <item>day</item>
