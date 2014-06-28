@@ -7,9 +7,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.connection.protocol.Protocol;
+import com.intellij.jetSprinkler.debug.DebugActivity;
 import com.intellij.jetSprinkler.plantPage.PlantInfoActivity;
 
 import java.util.ArrayList;
@@ -40,6 +42,15 @@ public class PlantsListActivity extends Activity {
 
     adapter = new PlantListAdapter(this,
             R.layout.plantlist_item_row, myPlants);
+
+    Button btn = ((Button) findViewById(R.id.debug));
+    btn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent i = new Intent(PlantsListActivity.this, DebugActivity.class);
+        startActivityForResult(i, 123);
+      }
+    });
 
     ListView list = ((ListView) findViewById(R.id.plantsListView));
     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
