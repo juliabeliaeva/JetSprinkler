@@ -63,7 +63,7 @@ public class Rule implements Parcelable {
       date.set(Calendar.MINUTE, 0);
       datePresentation = new SimpleDateFormat("HH:mm").format(date.getTime()) + " ";
     }
-    return datePresentation + "every " + (getInterval() == 1 ? getUnit().name : getInterval() + " " + getUnit().name + "s")+"("+volume+"s)";
+    return datePresentation + "every " + (getInterval() == 1 ? getUnit().name : getInterval() + " " + getUnit().name + "s")+"("+volume/10+"s)";
   }
 
   @Override

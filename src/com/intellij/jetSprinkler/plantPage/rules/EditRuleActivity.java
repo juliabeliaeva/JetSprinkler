@@ -59,7 +59,7 @@ public class EditRuleActivity extends Activity {
     final SeekBar durationSeeker = (SeekBar) findViewById(R.id.durationSeeker);
     durationSeeker.setMax(20);
     durationSeeker.setProgress(rule.getVolume()/10);
-    updateDuringText(rule.getVolume(), duringText);
+    updateDuringText(rule.getVolume()/10, duringText);
     durationSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
