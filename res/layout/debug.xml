@@ -57,5 +57,15 @@
                 android:text="Off"
                 android:id="@+id/btnPortOff" android:layout_gravity="center_vertical|right" style="@style/button"/>
     </LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear tt"
+                android:id="@+id/btnClearTT" android:layout_gravity="center_vertical|right" style="@style/button"/>
+    </LinearLayout>
 
 </LinearLayout>

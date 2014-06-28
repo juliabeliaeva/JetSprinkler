@@ -69,7 +69,7 @@ public class DebugActivity extends Activity {
     btn4.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        String res = CommandExecutor.executeCommand("Y", "" + et.getText().toString(), true);
+        String res = CommandExecutor.executeCommand("Y", "" + et.getText().toString(), false);
         if (res==null) {
           tv.setText("fail");
           return;
@@ -82,7 +82,20 @@ public class DebugActivity extends Activity {
     btn5.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        String res = CommandExecutor.executeCommand("Z", "" + et.getText().toString(), true);
+        String res = CommandExecutor.executeCommand("Z", "" + et.getText().toString(), false);
+        if (res==null) {
+          tv.setText("fail");
+          return;
+        }
+        tv.setText("ok");
+      }
+    });
+
+    Button btn6 = (Button) findViewById(R.id.btnClearTT);
+    btn6.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String res = CommandExecutor.executeCommand("T", null, false);
         if (res==null) {
           tv.setText("fail");
           return;
