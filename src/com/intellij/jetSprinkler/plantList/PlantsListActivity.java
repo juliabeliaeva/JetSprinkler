@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.connection.protocol.Protocol;
 import com.intellij.jetSprinkler.debug.DebugActivity;
+import com.intellij.jetSprinkler.devicesList.Sprinkler;
 import com.intellij.jetSprinkler.plantPage.PlantInfoActivity;
 
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class PlantsListActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.plants_list);
+
+    final String stationName = getIntent().getStringExtra(Sprinkler.STATION_NAME_DATA);
+    setTitle(stationName + " - " + getTitle());
 
     int sprinklerCount;
     try {
@@ -48,6 +52,7 @@ public class PlantsListActivity extends Activity {
       @Override
       public void onClick(View v) {
         Intent i = new Intent(PlantsListActivity.this, DebugActivity.class);
+        i.putExtra(Sprinkler.STATION_NAME_DATA, stationName);
         startActivityForResult(i, 123);
       }
     });

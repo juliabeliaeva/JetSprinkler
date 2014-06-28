@@ -8,10 +8,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="set time"
-            android:id="@+id/btnTime" android:layout_gravity="left|top"/>
+            android:id="@+id/btnTime" android:layout_gravity="left|top" style="@style/button"/>
     <TextView
             android:layout_width="123dp"
             android:layout_height="102dp"
             android:text="time"
-            android:id="@+id/tvTime" android:layout_gravity="center_horizontal|top"/>
+            android:id="@+id/tvTime" android:layout_gravity="center_horizontal|top" style="@style/normalText"/>
 </FrameLayout>

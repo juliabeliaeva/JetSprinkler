@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.intellij.jetSprinkler.R;
 import com.intellij.jetSprinkler.connection.Connection;
 import com.intellij.jetSprinkler.connection.protocol.Protocol;
@@ -19,6 +20,7 @@ import java.util.List;
 public class Sprinkler extends Activity {
   private static final String STATION_NAME_PREFIX = "HC";
   private static final int REQUEST_ENABLE_BT = 1;
+  public static final String STATION_NAME_DATA = "STATION_NAME";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -45,12 +47,17 @@ public class Sprinkler extends Activity {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         StationData station = devices.get(position);
         Connection.getInstance().dispose();
-        if (!Connection.getInstance().init(station.getAddress())) return;
+        if (!Connection.getInstance().init(station.getAddress())) {
+          final Toast toast = Toast.makeText(Sprinkler.this.getApplicationContext(), "No connection to " + station.getName(), Toast.LENGTH_SHORT);
+          toast.show();
+          return;
+        }
 
         int sprinklerCount = Protocol.getSprinklerCount();
         if (sprinklerCount == -1) return;
 
         Intent i = new Intent(Sprinkler.this, PlantsListActivity.class);
+        i.putExtra(STATION_NAME_DATA, station.getName());
         startActivity(i);
       }
     });
