@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -44,8 +43,6 @@ public class PlantInfoActivity extends Activity {
   private EditText myName;
   private TextView myDate;
   private TextView timeTableHeader;
-  private String lastImageUri; // And this code is going to be in a public repo. FOREVER. My sadness is infinite.
-  private long captureTime;
   private Timetable loaded;
 
   private File myFile;
@@ -281,9 +278,9 @@ public class PlantInfoActivity extends Activity {
 
   private void updateTimetableHeader() {
     if (rules.isEmpty()) {
-      timeTableHeader.setText("Not watering " + myData.getName());
+      timeTableHeader.setText("No Rules");
     } else {
-      timeTableHeader.setText("Watering " + myData.getName());
+      timeTableHeader.setText("Rules " + myData.getName());
     }
   }
 
