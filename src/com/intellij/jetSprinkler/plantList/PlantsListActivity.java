@@ -39,9 +39,7 @@ public class PlantsListActivity extends Activity {
     } catch (Throwable throwable) {
       sprinklerCount = 3;
     }
-    if (sprinklerCount==-1) {
-      throw new RuntimeException("hallo");
-    }
+
     readState(sprinklerCount);
 
     adapter = new PlantListAdapter(this,
@@ -117,6 +115,12 @@ public class PlantsListActivity extends Activity {
         String imageUri = sharedPreferences.getString(IMAGE_URI + port, null);
         res = new PlantListItem(port);
         res.setName(name);
+
+        String lastWater = Protocol.getSensor(port);
+        if (lastWater!=null){
+          res.setLastWatering(PlantInfoActivity.getRealDate(Integer.parseInt(lastWater)).getTime());
+        }
+
         res.setImageFileUri(imageUri);
       } else {
         // we do not have info

@@ -191,7 +191,7 @@ public class PlantInfoActivity extends Activity {
     return tt;
   }
 
-  private Calendar getStartCalendar() {
+  private static Calendar getStartCalendar() {
     Calendar calStart = Calendar.getInstance(TimeZone.getTimeZone("GMT+00:00"));
     calStart.set(2014, Calendar.JANUARY, 1);
     return calStart;
@@ -214,13 +214,18 @@ public class PlantInfoActivity extends Activity {
       r.setInterval(ti.period / right.howManyMinutes());
       r.setUnit(right);
 
-      Calendar cal = getStartCalendar();
-      cal.add(Calendar.MINUTE, ti.start);
+      Calendar cal = getRealDate(ti.start);
 
       r.setHour(cal.get(Calendar.HOUR_OF_DAY));
       r.setVolume(ti.volume);
       rules.add(r);
     }
+  }
+
+  public static Calendar getRealDate(int minutes) {
+    Calendar cal = getStartCalendar();
+    cal.add(Calendar.MINUTE, minutes);
+    return cal;
   }
 
   private void updateBackground() {
