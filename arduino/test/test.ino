@@ -13,7 +13,7 @@ const int NUMBER_OF_DEVICES = sizeof(pinValve)/sizeof(int);
 Stream& ttyCmd = Serial;
 Stream& ttyDebug = Serial;
 
-//#define debug(x) ttyDebug.print(x)
+#define debug(x) ttyDebug.print(x)
 #define debug(x)
 
 struct Rule {
@@ -44,6 +44,9 @@ long lastCheck = 0;              // last time (in minutes since 2014-01-01) we c
 int wateringID = -1;             // <0 - no watering now, otherwise - watered device
 long wateringStarted = 0;        // millis() when watering for device wateringID was started
 unsigned int wateringLength;     // current watering length in millis
+int alarmID = -1;
+long alarmStarted = 0;
+unsigned int alarmLength;
 
 State state = READY;
 
@@ -57,7 +60,7 @@ void setup() {
   setup1302();
   if (!testEEPROMinitialized())  initEEPROM();
   
-  lastCheck = getCurrentTime()-2;
+  lastCheck = getCurrentTime();
 
 //  ttyCmd.setTimeout(10000);  // 10 seconds for typing
 }
@@ -113,15 +116,29 @@ void loop() {
           // start watering
           Rule rule;
           readRule(pollWatering(), rule);
-          wateringStarted = millis();
-          wateringID = rule.id;
-          wateringLength = rule.volume * 100;    // convert to milliseconds
-          startWatering(wateringID);
+          if (rule.flags & 2) {
+            wateringStarted = millis();
+            wateringID = rule.id;
+            wateringLength = rule.volume * 100;    // convert to milliseconds
+            startWatering(wateringID);
+          }
+          if (rule.flags & 4) {
+            int alarmLeft = alarmID<0 ? 0 : millis() - alarmStarted;
+            alarmStarted = millis();
+            alarmID = rule.id;
+            alarmLength = max(alarmLeft, rule.volume * 100);
+            startAlarm(alarmID);
+          }
         }
       } else if (millis() - wateringStarted >= wateringLength) {
         // stop watering
         stopWatering(wateringID);
         wateringID = -1;
+      }
+      if (alarmID >= 0 && (millis()-alarmStarted) >= alarmLength) {
+        // stop alarm
+        stopAlarm(alarmID);
+        alarmID = -1;
       }
     }
   }
@@ -362,7 +379,7 @@ byte pollWatering() {  // return 0 if queue is empty
   return result;
 }
 
-long nextTime(long from, long start, long interval) {  // find next number >= from in start+interval*n sequence
+long nextTime(unsigned long from, unsigned long start, unsigned long interval) {  // find next number >= from in start+interval*n sequence
   debug("\n nextTime("); debug(from); debug(", "); debug(start); debug(", "); debug(interval); debug(") = "); debug(from + interval - (from-start) % interval); debug("\n");
   if (start>from)  return start;
   long r = (from - start) % interval;
@@ -375,11 +392,15 @@ void checkRules(long curTime) {
   for (int i=0; i<n; ++i) {
     readRule(i, rule);
     if (!(rule.flags & 1))  continue;  // disabled rule
-    debug(" checking rule "); debug(i); debug(", last check: "); debug(lastCheck); debug(" cur time: "); debug(curTime); debug(" nextTime: ");
-    debug(nextTime(lastCheck+1, rule.start, rule.period));
-    if (nextTime(lastCheck+1, rule.start, rule.period) <= curTime) {
-      debug(" offer watering");
-      offerWatering(i);
+    if (rule.flags & 128) {            // conditional rule
+      debug(" conditional rules are not supported now :( ");
+    } else {                           // timing rule
+      debug(" checking rule "); debug(i); debug(", last check: "); debug(lastCheck); debug(" cur time: "); debug(curTime); debug(" nextTime: ");
+      debug(nextTime(lastCheck+1, rule.start, rule.period));
+      if (nextTime(lastCheck+1, rule.start, rule.period) <= curTime) {
+        debug(" offer watering");
+        offerWatering(i);
+      }
     }
     debug("\n");
   }
@@ -400,3 +421,12 @@ void stopWatering(int deviceID) {
   stopWatering();
 }
 
+void startAlarm(int deviceID) {
+  debug("\nStarting alarm device="); debug(deviceID); debug("\n");
+  digitalWrite(pinLED, HIGH);
+}
+
+void stopAlarm(int deviceID) {
+  debug("\nStopping alarm device="); debug(deviceID); debug("\n");
+  digitalWrite(pinLED, LOW);
+}
